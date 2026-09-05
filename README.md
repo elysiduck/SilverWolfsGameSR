@@ -18,6 +18,12 @@ SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是�
 - QDQ INT8 NPU 推理
 - Magpie Pipeline v4：异步 NPU worker / latest-frame-wins / 多槽流水线
 
+## 文档中心
+
+GameSR 的历史迁移资料、数据采集/Cleaner、训练、Magpie/NPU 部署、Pipeline/Profiler 和上游参考资料已分类整理到 [`docs/README.md`](docs/README.md)。
+
+当前项目状态以本 README、`CHANGELOG.md` 和当前源码为准；`docs/archive/` 中的 v1.7、C8、Pipeline v3 等资料用于历史追溯，不代表当前主线。
+
 ## 版本规则
 
 - Training: `training-vX.Y.Z`
