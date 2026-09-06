@@ -1,0 +1,45 @@
+﻿GameSR Potential-4 Output Probe v1.1.0
+============================================================
+Backbones: C8-L5 / C16-L4 / C24-L3 / C32-L3
+Outputs: O3 / O4 / O6 / O8
+Warmup/Runs: 20/600
+
+Each delta is against O3 of the SAME backbone.
+Scope: pure NPU runtime only; no Magpie Map/stitch/upload/learned decoder.
+
+Results:
+
+[C8-L5] source sweep O3=11.0735 ms
+  O3  NPU_ONLY     avg=   7.0740 ms  P95=   7.5072 ms  delta=    0.000%  output=10.547 MiB
+  O4  NPU_ONLY     avg=   7.2163 ms  P95=   7.6202 ms  delta=   +2.012%  output=14.063 MiB
+  O6  NPU_ONLY     avg=   7.6945 ms  P95=   8.1082 ms  delta=   +8.772%  output=21.094 MiB
+  O8  NPU_ONLY     avg=   8.0370 ms  P95=   8.4966 ms  delta=  +13.613%  output=28.125 MiB
+
+[C16-L4] source sweep O3=10.5284 ms
+  O3  NPU_ONLY     avg=   7.0437 ms  P95=   7.4936 ms  delta=    0.000%  output=10.547 MiB
+  O4  NPU_ONLY     avg=   7.1822 ms  P95=   7.5589 ms  delta=   +1.966%  output=14.063 MiB
+  O6  NPU_ONLY     avg=   7.7384 ms  P95=   8.2437 ms  delta=   +9.863%  output=21.094 MiB
+  O8  NPU_ONLY     avg=   7.9756 ms  P95=   8.4159 ms  delta=  +13.230%  output=28.125 MiB
+
+[C24-L3] source sweep O3=10.4399 ms
+  O3  NPU_ONLY     avg=   7.3011 ms  P95=   7.7069 ms  delta=    0.000%  output=10.547 MiB
+  O4  NPU_ONLY     avg=   7.4550 ms  P95=   7.8768 ms  delta=   +2.107%  output=14.063 MiB
+  O6  NPU_ONLY     avg=   7.8995 ms  P95=   8.3808 ms  delta=   +8.195%  output=21.094 MiB
+  O8  NPU_ONLY     avg=   8.2242 ms  P95=   8.8072 ms  delta=  +12.643%  output=28.125 MiB
+
+[C32-L3] source sweep O3=11.1148 ms
+  O3  NPU_ONLY     avg=   8.1005 ms  P95=   8.5436 ms  delta=    0.000%  output=10.547 MiB
+  O4  NPU_ONLY     avg=   8.2909 ms  P95=   8.9268 ms  delta=   +2.350%  output=14.063 MiB
+  O6  NPU_ONLY     avg=   8.7142 ms  P95=   9.1971 ms  delta=   +7.576%  output=21.094 MiB
+  O8  NPU_ONLY     avg=   9.0067 ms  P95=   9.4867 ms  delta=  +11.187%  output=28.125 MiB
+
+Interpretation targets:
+  - Prefer O4/O6 when delta remains small and all nodes stay NPU_ONLY.
+  - O6 is the key learned-reconstruction candidate because it doubles feature output vs RGB O3.
+  - If one backbone has a sharp O6/O8 cliff while another does not, output-head alignment depends on C/L mapping.
+  - Do not treat this as a quality ranking; these are random-weight structure probes.
+
+Rows   : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Potential4-Output-Probe-20260906-124724-ROWS.csv
+Latency: D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Potential4-Output-Probe-20260906-124724-LATENCY-MATRIX.csv
+Delta  : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Potential4-Output-Probe-20260906-124724-DELTA-MATRIX.csv
+Full   : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Potential4-Output-Probe-20260906-124724-FULL.json

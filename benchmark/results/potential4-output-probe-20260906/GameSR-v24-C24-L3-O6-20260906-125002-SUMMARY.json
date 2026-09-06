@@ -1,0 +1,113 @@
+﻿{
+    "schema_version":  4,
+    "benchmark":  "GameSR Ryzen AI NPU Benchmark v2.4.1",
+    "created":  "2026-09-06T12:50:15.2983798+08:00",
+    "family":  "C24-L3-O6",
+    "source":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\_p4o\\4f6782da0e89234c\\handheld_payload\\models\\C24-L3-O6",
+    "deployment_manifest":  null,
+    "runtime_target":  "X1-Benchmark",
+    "input_mode":  "onnxruntime_perf_test synthetic input",
+    "warmup":  20,
+    "runs":  600,
+    "measured_concurrency":  1,
+    "only_int8":  true,
+    "cpu_baseline_enabled":  false,
+    "force_recompile":  false,
+    "profile_enabled":  true,
+    "primary_variant":  "int8",
+    "overall_status":  "NPU_ONLY",
+    "exit_code":  0,
+    "runtime_files":  [
+                          {
+                              "name":  "onnxruntime_perf_test.exe",
+                              "size_bytes":  2163712,
+                              "file_version":  "",
+                              "sha256":  "a1ab8c531fefcc16eb51050fd56b20417955231c47586690c0b3720ef6e1120c"
+                          },
+                          {
+                              "name":  "onnxruntime.dll",
+                              "size_bytes":  21925456,
+                              "file_version":  "1.23.3",
+                              "sha256":  "919ac18b9ad61588c1d65edba775b012da626facd01623feab3a470042eaf4e3"
+                          },
+                          {
+                              "name":  "onnxruntime_providers_vitisai.dll",
+                              "size_bytes":  435280,
+                              "file_version":  "",
+                              "sha256":  "50ec5039fbca985c7a818f74eba801ae74b8f7e646e726efc2cc50487225050e"
+                          },
+                          {
+                              "name":  "vitis-ai-runtime.dll",
+                              "size_bytes":  17047040,
+                              "file_version":  "",
+                              "sha256":  "0c8b42a56ae8cb2288fb670805726ce0ef409449e959f0a3cfeda017ac18d63f"
+                          },
+                          {
+                              "name":  "vaip_config_stride.json",
+                              "size_bytes":  854782,
+                              "file_version":  "",
+                              "sha256":  "cd0cb132e9e43f4dd614ecabb2764e1e8b3c4bb1487d5b0da0c21feb800be550"
+                          },
+                          {
+                              "name":  "AMD_AIE2P_4x4_Overlay.xclbin",
+                              "size_bytes":  80722,
+                              "file_version":  "",
+                              "sha256":  "1cc03c558b05ce220d133f9a332c8addd9b5261c0526a4ec41378ac1adc5a4e2"
+                          }
+                      ],
+    "models":  [
+                   {
+                       "variant":  "int8",
+                       "path":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\_p4o\\4f6782da0e89234c\\handheld_payload\\models\\C24-L3-O6\\C24-L3-O6-int8-qdq.onnx",
+                       "fingerprint":  "b83672dc78b7dd13e1d0e091e5ef69a2b6a963e067b65554e8834b53dbf51648",
+                       "onnx_sha256":  "7be4ecfdec218d891b7fdf12e102954694bd3e7141eae35e9b4913bf3df819de",
+                       "external_sha256":  "",
+                       "external_present":  false
+                   }
+               ],
+    "results":  [
+                    {
+                        "variant":  "int8",
+                        "provider":  "vitisai",
+                        "status":  "NPU_ONLY",
+                        "exit_code":  0,
+                        "average_ms":  7.89949,
+                        "p50_ms":  7.950499999999999,
+                        "p95_ms":  8.3808,
+                        "pure_fps":  126.549,
+                        "warmup_runs":  20,
+                        "measured_concurrency":  1,
+                        "random_seed":  42,
+                        "warmup_exit_code":  0,
+                        "warmup_wall_seconds":  5.698,
+                        "process_wall_seconds":  5.341,
+                        "model":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\_p4o\\4f6782da0e89234c\\handheld_payload\\models\\C24-L3-O6\\C24-L3-O6-int8-qdq.onnx",
+                        "model_fingerprint":  "b83672dc78b7dd13e1d0e091e5ef69a2b6a963e067b65554e8834b53dbf51648",
+                        "cache_key":  "b83672dc78b7dd13",
+                        "cache_present_before":  false,
+                        "cache_directory":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\cache\\b83672dc78b7dd13",
+                        "profile":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\results\\C24-L3-O6-int8-qdq-b83672dc78b7dd13-20260906-125002-vitisai-profile_2026-09-06_12-50-09.json",
+                        "profile_found":  true,
+                        "total_profile_events":  1803,
+                        "unique_profile_nodes":  3,
+                        "npu_events":  1803,
+                        "cpu_events":  0,
+                        "other_provider_events":  0,
+                        "npu_event_share_percent":  100,
+                        "npu_duration_share_percent":  100,
+                        "provider_counts":  {
+                                                "VitisAIExecutionProvider":  1803
+                                            },
+                        "op_counts":  {
+                                          "DequantizeLinear":  601,
+                                          "QuantizeLinear":  601,
+                                          "vitis_ai_ep_1":  601
+                                      },
+                        "cpu_fallback_ops":  {
+
+                                             },
+                        "warmup_log":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\results\\C24-L3-O6-int8-qdq-b83672dc78b7dd13-20260906-125002-vitisai-warmup.log",
+                        "log":  "D:\\Game SR\\GameSR-XDNA-Architecture-Benchmark-v1.3\\GameSR-XDNA-Architecture-Benchmark-v1.3\\results\\C24-L3-O6-int8-qdq-b83672dc78b7dd13-20260906-125002-vitisai.log"
+                    }
+                ]
+}

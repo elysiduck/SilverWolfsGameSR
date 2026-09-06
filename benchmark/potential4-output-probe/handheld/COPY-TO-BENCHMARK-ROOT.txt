@@ -1,0 +1,5 @@
+把本 HANDHELD 包内文件复制到：
+GameSR-XDNA-Architecture-Benchmark-v1.3-105patched 的 benchmark 根目录。
+
+不要把 PC 包复制到掌机。
+PC 端只需要把最终生成的 GameSR-NPU-Potential4-Output-Probe-Models-16-*.zip 传过来。

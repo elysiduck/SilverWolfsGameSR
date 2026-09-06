@@ -1,0 +1,5 @@
+architecture,channels,conv_layers,parameters_o3,gmac_o3,average_ms,p95_ms,pure_fps,effective_gmac_s,role
+C8-L5,8,5,2195,1.990656,11.0735,11.3780,90.2782,179.768,tiny candidate
+C16-L4,16,4,5523,5.042995,10.5284,10.9507,94.9531,478.990,balanced candidate
+C24-L3,24,3,6531,5.971968,10.4399,10.8276,95.7588,572.033,wide-shallow candidate
+C32-L3,32,3,11011,10.085990,11.1148,11.4552,89.9467,907.438,high-capacity candidate

@@ -17,6 +17,7 @@ Git tracks source code, configuration, documentation and compact benchmark summa
 | Benchmark | `GameSR-XDNA-Architecture-Benchmark-v1.3.zip` | Release `benchmark-v1.3` after redistribution review |
 | Benchmark 105patched | `GameSR-XDNA-Architecture-Benchmark-v1.3-105patched.zip` | Release `benchmark-v1.3-105patched`; 105 compiled caches, runtime and raw results |
 | Output-channel probe | v1.0.2 patch, O3/O4/O6/O8 model payload and Compact result | Release `output-channel-probe-v1.0.2` |
+| Potential-4 output probe | v1.1.0 PC generator, handheld Runner, 16-model payload and Compact result | Release `potential4-output-probe-v1.1.0` |
 | Sweep | 105-model bundle and compact result ZIP | Release or independent artifact storage |
 | Magpie | v4.1.1 full-source ZIP | Release `magpie-v4.1.1` |
 | Models | C32-L3 ONNX/QDQ and checkpoints | Model release or independent artifact storage |

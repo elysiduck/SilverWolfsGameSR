@@ -14,6 +14,9 @@ All scripts run from any working directory. They do not commit generated files.
 
 # Generate C16-L4 O3/O4/O6/O8 output-width probes with the Quark environment.
 .\scripts\build-output-channel-probes.ps1 -Outputs 3,4,6,8 -SkipExisting
+
+# Generate the 4-backbone x 4-output focused probe payload.
+.\scripts\build-potential4-output-probes.ps1 -Outputs 3,4,6,8 -SkipExisting
 ```
 
 Magpie and the XDNA benchmark require AMD/ORT runtime files that are intentionally not in Git. Download and extract release assets beneath one artifact root, verify them, then stage into ignored build locations:
