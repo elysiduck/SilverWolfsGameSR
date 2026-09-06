@@ -1,0 +1,5 @@
+GameSR phase-aware decoder/training integration
+Decoder contract: phase_aware_3x3_v1 / rgb_residual / base_skip=1.0
+Training contract: phase_residual_stable_v187
+Default O>3 experiment suffix: phase3x3r-v4
+Dataset contract: dataset manifest fingerprint (changes on Full/Incremental update)

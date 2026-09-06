@@ -1,0 +1,199 @@
+version: 1.7.4
+project: gamesr-c16-l4-o4-phase3x3r-v4
+seed: 42
+scale: 1.5
+model:
+  channels: 16
+  architecture: npu_sequential
+  conv_layers: 4
+  output_channels: 4
+deployment:
+  core_only: true
+  postprocess: phase_aware_3x3_v1
+  decoder:
+    kernel_size: 3
+    phase_x: 3
+    phase_y: 3
+    scale_numerator: 3
+    scale_denominator: 2
+    padding_mode: replicate
+    base_skip: 1.0
+    output: rgb_residual
+data:
+  root: dataset
+  hr_patch: 192
+  batch_size: 16
+  workers: 6
+  prefetch_factor: 4
+  pin_memory: true
+  drop_last: true
+  augment: true
+  val_resize_kernel: lanczos
+  degradation:
+    resize_kernels:
+    - bicubic
+    - bilinear
+    - area
+    resize_kernel_weights:
+    - 0.75
+    - 0.2
+    - 0.05
+    blur_probability: 0.1
+    sharpen_probability: 0.08
+    post_sharpen_probability: 0.08
+    jpeg_probability: 0.0
+    noise_probability: 0.04
+    quantization_probability: 0.025
+    brightness_probability: 0.03
+    contrast_probability: 0.05
+    jpeg_quality:
+    - 80
+    - 96
+    noise_std:
+    - 0.2
+    - 1.0
+    curriculum_mode: stable_v2
+    clean_resize_kernel: bicubic
+    clean_anchor_start: 1.0
+    clean_anchor_end: 0.75
+  val_batch_size: 16
+  streaming_prefetch:
+    enabled: auto
+    read_ahead_samples: 256
+    fetch_threads: 24
+    decode_threads: 6
+    pin_memory: true
+    batch_queue: 4
+    cuda_prefetch: true
+    persistent_cache: true
+    cache_budget_gib: auto
+    cache_reserve_gib: 8.0
+    cache_cap_gib: 12.0
+    cache_auto_fraction: 0.5
+    cache_floor_gib: 1.0
+    cache_protected_ratio: 0.8
+    emergency_free_gib: 4.0
+    next_epoch_prefetch_samples: 256
+    validation_cache: auto
+    validation_cache_budget_gib: auto
+    validation_cache_reserve_gib: 7.0
+    validation_cache_cap_gib: 1.5
+    validation_cache_auto_fraction: 0.5
+    validation_cache_floor_mib: 64.0
+    validation_read_ahead_samples: 96
+    validation_threads: 12
+    validation_pin_memory: true
+  hard_patch_mining:
+    enabled: true
+    min_fraction: 0.08
+    max_fraction: 0.12
+    min_mix: 0.02
+    max_mix: 0.04
+    weight_cap: 1.5
+    detail_floor: 0.45
+    detail_low: 0.006
+    detail_high: 0.03
+    polish_fraction: 0.08
+    polish_mix: 0.01
+  degradation_curriculum:
+    start_strength: 0.1
+    full_strength_at: 0.88
+train:
+  epochs: 100
+  learning_rate: 0.00015
+  weight_decay: 0.0001
+  warmup_epochs: 3
+  amp: true
+  channels_last: true
+  ema: true
+  ema_decay: 0.995
+  l1_weight: 1.0
+  edge_loss_weight: 0.05
+  ssim_loss_weight: 0.02
+  ssim_every_n_steps: 4
+  grad_clip: 1.0
+  save_every: 10
+  preview_every: 2
+  val_batches: 0
+  algorithm_v18:
+    enabled: true
+    game_aware_profile: v1.8.2
+    foundation_end: 0.06
+    detail_end: 0.3
+    edge_boost: 0.45
+    ssim_boost: 0.5
+    high_frequency_weight: 0.03
+    high_frequency_every_n_steps: 2
+    high_frequency_detail_aware: true
+    high_frequency_detail_floor: 0.15
+    high_frequency_detail_low: 0.006
+    high_frequency_detail_high: 0.05
+    polish_start: 0.5
+    polish_full_at: 0.75
+    polish_edge_weight: 0.0675
+    polish_ssim_weight: 0.03
+    polish_high_frequency_weight: 0.012
+    information_aware_l1:
+      enabled: true
+      low_information_weight: 0.8
+      high_information_weight: 1.15
+      flat_black_weight: 0.8
+      dark_mean_threshold: 0.12
+      flat_std_threshold: 0.035
+      min_weight: 0.75
+      max_weight: 1.25
+  phase_aware_loss:
+    enabled: true
+    charbonnier_weight: 1.0
+    charbonnier_epsilon: 0.001
+    ms_ssim_weight: 0.03
+    gradient_weight: 0.02
+    frequency_weight: 0.004
+    ringing_weight: 0.02
+    ms_ssim_every_n_steps: 1
+    frequency_every_n_steps: 1
+    detail_ramp_start: 0.15
+    detail_ramp_full_at: 0.55
+    polish_start: 0.7
+    polish_full_at: 0.9
+    polish_ms_ssim_weight: 0.02
+    polish_gradient_weight: 0.012
+    polish_frequency_weight: 0.002
+    polish_ringing_weight: 0.02
+  lr_schedule:
+    mode: stable_piecewise
+    hold_fraction: 0.1
+    half_fraction: 0.3
+    half_ratio: 0.5
+    min_ratio: 0.0666667
+  quality_control:
+    enabled: true
+    edge_soft: 1.08
+    edge_hard: 1.12
+    edge_recover: 1.06
+    psnr_drop_brake_db: 0.1
+    oversharp_soft: 0.24
+    detail_recover_step: 0.1
+    lr_plateau_patience: 4
+    lr_plateau_min_delta: 0.02
+    lr_reduce_factor: 0.5
+    lr_reduce_start: 0.15
+    min_lr: 1.0e-05
+  early_stopping:
+    enabled: true
+    patience: 15
+    min_delta_psnr: 0.02
+    start_progress: 0.7
+  quality_checkpoint:
+    max_edge_ratio: 1.1
+    min_delta_psnr: 0.0
+    min_detail_delta_psnr: 0.0
+    max_oversharp_ratio: 0.26
+output: outputs/gamesr-c16-l4-o4-phase3x3r-v4
+trainer_version: 1.8.7
+architecture_selection:
+  channels: 16
+  conv_layers: 4
+  output_channels: 4
+  source: interactive_clo_selector
+training_contract: phase_residual_stable_v187

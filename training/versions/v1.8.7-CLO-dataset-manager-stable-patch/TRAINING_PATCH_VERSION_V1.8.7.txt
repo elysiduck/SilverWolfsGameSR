@@ -1,0 +1,4 @@
+GameSR v1.8.7 Integrated Stable Training + Dataset Manager Patch
+Base: gamesr-local-training-v1.8.5-CLO-phase3x3-residual-shared-env
+Install: extract directly over a clean v1.8.5 root and overwrite files.
+Includes all v1.8.6 stable phase-residual training fixes plus session-aware versioned dataset management.
