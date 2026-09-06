@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-07
+
+### Training v1.8.4 / v1.8.5 / v1.8.6 / v1.8.7 — Phase-Aware 3×3 家族归档
+
+- 新增训练代码四版本，独立归档于 `training/versions/`（构建产物按 `.gitignore` 不入仓），并打 tag `training-v1.8.4 … training-v1.8.7`；`training/current/` 现有 v1.8.2 + CLO v1.0.1 基线保持不变。
+- **v1.8.4** `gamesr-local-training-v1.8.4-CLO-phase-aware-3x3-shared-env.zip`：phase-aware 3×3 decoder（九相位 27 路卷积）+ 五类新损失（Charbonnier / MS-SSIM / 梯度 / 频率 / 振铃）+ 直接 720p→1080p 重建 + 20% bilinear skip；schema v2 `direct_rgb`。SHA256 `7D377B71…CDC9E`。
+- **v1.8.5** `gamesr-local-training-v1.8.5-CLO-phase3x3-residual-shared-env.zip`：九相位 decoder 改学 RGB residual、权重零初始化 ⇒ 第 0 轮逐像素=双线性；MS-SSIM 每步、SSIM/高频/振铃渐入、梯度 25%→100%、困难样本 3%~8%、退化 30%→65%；schema v3 `rgb_residual` + decoder 契约（防误续训）。SHA256 `9DD052D3…B73C26`。
+- **v1.8.6** `GameSR-v1.8.6-Stable-PhaseResidual-Training-Patch.zip`：稳定训练增量补丁（未动解码器），新增 `training_contract` 契约 + 质量刹车；导出 `-phase3x3r-v3`。SHA256 `074015E7…61D7C`。
+- **v1.8.7** `GameSR-v1.8.7-Dataset-Manager-Stable-Training-Full-Patch.zip`：增量补丁，新增 `prepare_dataset.py` Dataset Manager（会话原子组防泄漏切分、默认 80/10/10）+ `dataset_contract`；导出 `-phase3x3r-v4`。SHA256 `2D0FE4AB…F21ED`。
+- 梳理与检查（源码审查 + 真实 torch 执行 + 纯 Python 几何复现）见 `training/versions/REVIEW-v1.8.4-v1.8.7.md`：四个版本核心改造均属实，无阻断性问题；补丁相对基线语义 / 契约 / 调度自洽。
+
 ## 2026-09-06
 
 ### Training CLO v1.0 — C/L/O 三维训练选择器
