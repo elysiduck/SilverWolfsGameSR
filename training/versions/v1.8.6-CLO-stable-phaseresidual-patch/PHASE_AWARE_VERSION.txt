@@ -1,0 +1,5 @@
+GameSR training phase-aware 3x3 residual v3.0
+Stable-training controller revision 1.8.6
+Decoder contract remains: base_skip=1.0, output=rgb_residual
+Training contract: phase_residual_stable_v186
+Epoch selection: explicit/interactive values are respected; default maximum=100

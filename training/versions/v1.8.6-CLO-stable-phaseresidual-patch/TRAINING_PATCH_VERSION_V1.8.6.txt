@@ -1,0 +1,5 @@
+GameSR training patch v1.8.6
+Stable phase-residual curriculum / clean-anchor degradation / quality brake
+Training contract: phase_residual_stable_v186
+Base package: v1.8.5 CLO phase3x3 residual shared-env
+Epoch input hotfix integrated: user-selected epoch count is never rewritten to 80
