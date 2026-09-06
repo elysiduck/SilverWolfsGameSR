@@ -11,6 +11,12 @@
 - **v1.8.7** `GameSR-v1.8.7-Dataset-Manager-Stable-Training-Full-Patch.zip`：增量补丁，新增 `prepare_dataset.py` Dataset Manager（会话原子组防泄漏切分、默认 80/10/10）+ `dataset_contract`；导出 `-phase3x3r-v4`。SHA256 `2D0FE4AB…F21ED`。
 - 梳理与检查（源码审查 + 真实 torch 执行 + 纯 Python 几何复现）见 `training/versions/REVIEW-v1.8.4-v1.8.7.md`：四个版本核心改造均属实，无阻断性问题；补丁相对基线语义 / 契约 / 调度自洽。
 
+### Magpie GameSR v4.3 — Phase3x3 + 模型子文件夹
+
+- 基于 **v4.2.6 SIMD** 版改造的 NPU 推理端，源码补丁独立归档于 `magpie/patches/v4.3-phase3x3-modelfolders/`（8 文件，未覆盖 `magpie/current/full-source`）；运行包（296 MB）按 `ARTIFACTS.md` 约定为 GitHub Release `magpie-v4.3` 资产，SHA256 `0A461A28…049738E2`。
+- 源码补丁 SHA256 `34706F71…D3246AA3`；支持新 `phase_aware_3x3_v1 + rgb_residual + schema v3`（O4=972 权重+27 bias），并与训练端 v1.8.5 导出契约逐维对齐；保留旧 O3/O4/O6/O8 路径；模型子文件夹 + 相对路径 + 绝对路径/`..` 越界阻止 + 首帧 bias 修复。
+- 梳理与检查见 `magpie/REVIEW-v4.3-phase3x3-modelfolders.md`。
+
 ## 2026-09-06
 
 ### Training CLO v1.0 — C/L/O 三维训练选择器

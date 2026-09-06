@@ -157,6 +157,20 @@ v1.8.4  Phase-Aware 3×3 decoder（direct_rgb + 20% bilinear skip，schema v2）
 - 自带 `verify_v187_patch.py`：首次 `dataset_manager` smoke 失败仅因测试环境缺 `tqdm`，安装后全 PASSED；真实执行 `prepare_dataset.py` 40 会话 full rebuild ⇒ ≈80/10/10、组不跨集、`health` 无 leaked_groups。
 - 导出目录后缀 `-phase3x3r-v4`。
 
+### Magpie GameSR v4.3 — Phase3x3 + 模型子文件夹（NPU 推理端，叠加 v4.2.6 SIMD）
+
+- **包**：
+  - 源码补丁 `Magpie-GameSR-v4.3-Phase3x3-ModelFolders-source-patch.zip`（`magpie/patches/v4.3-phase3x3-modelfolders/`）。SHA256 `34706F7197DDE8655AC448019378A2CD2BA28E8A5877BB23F5EC9D9CD3246AA3`。
+  - 运行包 `Magpie-GameSR-v4.3-Phase3x3-ModelFolders-runtime.zip`（296 MB，GitHub Release `magpie-v4.3` 资产，不入 git）。SHA256 `0A461A282EF13A48FBE86B98E37218EE59296D84523353BD3776BCD9049738E2`。
+- 基于 **v4.2.6 全模型输入/输出 SIMD** 版改造，**完整保留** SIMD、当前 720p 直进 NPU、异步三槽流水线（BUILD ID：`magpie-v4.3-phase3x3-folders | SIMD-v4.2.6 | decoder-schema-v3 | recursive-models`）。
+- 支持新 **`phase_aware_3x3_v1 + rgb_residual + schema v3`** decoder：O4 = **972 权重 + 27 bias**、O6 = 1458+27、O8 = 1944+27（权重布局 `phase_y,phase_x,rgb,input_channel,kernel_y,kernel_x`，3·3·3·O·3·3）。已实测运行包 `onnx.decoder.json` 该契约成立。
+- **保留旧 O3 RGB residual**（不需 decoder.json）与旧 O4/O6/O8 `bilinear_then_1x1`（旧 12 权重 + 3 bias 仍可识别），向后兼容。
+- **phase-aware HLSL decoder**（`cs_5_0`，嵌入 `SesrNpuProcessor.cpp` 并提供 `tools/GameSRPhaseDecoderTest.hlsl` 独立测试）：按 3/2 输出坐标选九相位、replicate 边界读 720p latent 3×3 邻域，最后 + 1.0× 双线性。与训练端 v1.8.5 解码器张量布局逐维对齐。
+- `models/GameSR` 支持**任意层级子文件夹**；下拉框显示并保存**相对路径**；**阻止绝对路径与 `..` 越界**（`SesrNpuProcessor.cpp:233-250`）。
+- 修复**首帧等待 NPU 时 decoder bias 污染双线性画面**：首帧用独立 baseline 着色器占位，decoder bias 不参与（`:1155`、`:1637`）。
+- 运行包已含新模型：`models/GameSR/gamesr-c16-l4-o4-phase3x3r-v3-720p-to-1080p/`（int8-qdq.onnx + meta.json + onnx.decoder.json）与 `gamesr-c24-l3-o4-720p-to-1080p/`。
+- 梳理与检查见 `magpie/REVIEW-v4.3-phase3x3-modelfolders.md`：契约与训练端 v1.8.5 schema v3 对齐，源码逐项核对属实；Release x64 编译 / HLSL `cs_5_0` 编译 / 设备端 NPU 缩放待用户解压后最终验证。
+
 ---
 
 ## 2. 相关工具家族（独立归档，未全部入仓）
