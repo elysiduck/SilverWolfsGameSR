@@ -15,6 +15,7 @@ Git tracks source code, configuration, documentation and compact benchmark summa
 | Training | `GameSR-training-code-v1.8.2-Late-Polish-Information-Aware-Patch.zip` | Release `training-v1.8.2` |
 | Dataset tools | Collector v3.2 ZIP and Cleaner v3.2.1 patch ZIP | Release `dataset-tools-v3.2.1` |
 | Benchmark | `GameSR-XDNA-Architecture-Benchmark-v1.3.zip` | Release `benchmark-v1.3` after redistribution review |
+| Benchmark 105patched | `GameSR-XDNA-Architecture-Benchmark-v1.3-105patched.zip` | Release `benchmark-v1.3-105patched`; 105 compiled caches, runtime and raw results |
 | Sweep | 105-model bundle and compact result ZIP | Release or independent artifact storage |
 | Magpie | v4.1.1 full-source ZIP | Release `magpie-v4.1.1` |
 | Models | C32-L3 ONNX/QDQ and checkpoints | Model release or independent artifact storage |
