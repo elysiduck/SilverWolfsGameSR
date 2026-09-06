@@ -42,10 +42,3 @@ v1.0.1 FIX 做了两项修改：
 注意：
 Builder 可以在训练环境目录运行；但 RUN-*.cmd / Runner-GameSR-OutputChannels.ps1
 必须覆盖到完整的 GameSR-XDNA-Architecture-Benchmark-v1.3 根目录后再在掌机执行。
-
-
-[v1.0.2 掌机修复]
-如果 v1.0.1 在 Expand-Archive 阶段报 Remove-Item 找不到 C16-L4-O3-int8-qdq.onnx，
-这是 Windows PowerShell 5.1 在较长解压路径/Force 覆盖路径上的 Archive 模块问题。
-v1.0.2 改用根目录下的短缓存 _ocp\<hash>，并在临时目录完整解压后再移动，
-不再使用 Expand-Archive -Force。无需重新生成 O3/O4/O6/O8 模型 ZIP。

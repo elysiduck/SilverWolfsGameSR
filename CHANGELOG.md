@@ -2,6 +2,16 @@
 
 ## 2026-09-06
 
+### Training CLO v1.0 — C/L/O 三维训练选择器
+
+- 在 **v1.7.2 C/L 选择器**基础上增加第三维 **O = NPU 输出通道数**，形成 C / L / O 三维自定义训练选择器，取代原 `training/current/` 的 v1.8.2 覆盖式训练包。
+- 入口：`training/一键训练-选择C-L-O.cmd`（中文）/ `training/Train-Choose-C-L.cmd`（英文），均调用 `pipeline.py --model custom`。
+- **O 三种模式**（`training/gamesr/model.py`）：
+  - **O3**：`output_channels=3`，`decoder=None` —— 保留原 RGB residual + GPU Bilinear 路径（契约 `magpie_bilinear_residual_v1`）。
+  - **O4 / O6**：`output_channels=4/6`，尾部追加 `nn.Conv2d(O, 3, 1)` learned 1×1 GPU decoder（契约 `magpie_learned_1x1_decoder_v1`）；导出额外生成 `<name>.onnx.decoder.json`（含 decoder weight/bias 与合约公式），供 Magpie / HLSL。
+- 自动命名隔离：`gamesr-c{C}-l{L}-o{O}`；一键 8 段流水线（环境检查 → 数据集清单 → batch 基准 → 训练 → 全量测试 → ONNX 导出 → FP16 → AMD Quark XINT8/QDQ → deployment 打包），导出用 `--use-ema`，O>3 时 `--output-channels` 透传量化。
+- 已验证 O3/O4/O6 前向计算正确；完整训练与 INT8 编译待真实数据集 + 较长时间执行。说明见 `training/CLO改造说明.txt`、`training/README_C_L_SELECTOR_CN.md`、`training/训练与帧率说明.md`。
+
 ### Magpie v4.1.1 AsyncNPU CurrentInput
 
 - 在 Pipeline v4.1 异步 NPU 基础上加入 Current Input 路径。

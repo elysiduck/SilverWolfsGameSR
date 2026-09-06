@@ -87,8 +87,8 @@ def _parse_positive_int(raw: str, label: str, minimum: int) -> int:
     return value
 
 
-def make_custom_config(root: Path, channels: int, layers: int, epochs: int | None = None, name: str | None = None) -> tuple[str, Path]:
-    """Create a reproducible npu_sequential training profile for one C/L pair.
+def make_custom_config(root: Path, channels: int, layers: int, output_channels: int = 3, epochs: int | None = None, name: str | None = None) -> tuple[str, Path]:
+    """Create a reproducible npu_sequential training profile for one C/L/O combination.
 
     The generated YAML lives directly under configs/ so the existing v1.7.x
     relative-path semantics (dataset/output relative to project root) remain
@@ -100,17 +100,20 @@ def make_custom_config(root: Path, channels: int, layers: int, epochs: int | Non
 
     channels = int(channels)
     layers = int(layers)
+    output_channels = int(output_channels)
     if channels < 1:
         raise SystemExit("Channels (C) must be >= 1.")
     if layers < 2:
         raise SystemExit("Conv layers (L) must be >= 2.")
+    if output_channels < 3:
+        raise SystemExit("Output channels (O) must be >= 3.")
 
     base_path = root / "configs" / "tiny-npu-fast.yaml"
     config = copy.deepcopy(load_yaml(base_path))
-    profile = (name or f"gamesr-c{channels}-l{layers}").strip()
+    profile = (name or f"gamesr-c{channels}-l{layers}-o{output_channels}").strip()
     profile = re.sub(r"[^A-Za-z0-9._-]+", "-", profile).strip("-.")
     if not profile:
-        profile = f"gamesr-c{channels}-l{layers}"
+        profile = f"gamesr-c{channels}-l{layers}-o{output_channels}"
 
     config["version"] = "1.7.4"
     config["trainer_version"] = "1.8.2"
@@ -119,6 +122,7 @@ def make_custom_config(root: Path, channels: int, layers: int, epochs: int | Non
         "channels": channels,
         "architecture": "npu_sequential",
         "conv_layers": layers,
+        "output_channels": output_channels,
     }
     if epochs is not None:
         if int(epochs) < 1:
@@ -233,17 +237,20 @@ def make_custom_config(root: Path, channels: int, layers: int, epochs: int | Non
     }
 
     config.setdefault("deployment", {})["core_only"] = True
-    config["deployment"]["postprocess"] = "magpie_bilinear_residual_v1"
+    config["deployment"]["postprocess"] = (
+        "magpie_bilinear_residual_v1" if output_channels == 3 else "magpie_learned_1x1_decoder_v1"
+    )
     config["architecture_selection"] = {
         "channels": channels,
         "conv_layers": layers,
-        "source": "interactive_cl_selector",
+        "output_channels": output_channels,
+        "source": "interactive_clo_selector",
     }
 
     path = root / "configs" / f"{profile}.yaml"
     path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=True), encoding="utf-8")
     print(f"[ARCH] Generated profile: {path}")
-    print(f"[ARCH] C={channels} | L={layers} | epochs={config['train']['epochs']} | output={config['output']}")
+    print(f"[ARCH] C={channels} | L={layers} | O={output_channels} | epochs={config['train']['epochs']} | output={config['output']}")
     print("[V1.8.2] Game-aware late polish: information-aware L1 + detail-hard + masked HF")
     if channels not in (8, 16, 24, 32):
         print("[ARCH] Note: current XDNA sweep found C8/C16/C24/C32 especially attractive, but this value is allowed.")
@@ -253,6 +260,7 @@ def make_custom_config(root: Path, channels: int, layers: int, epochs: int | Non
 def choose_custom_model(root: Path, args: argparse.Namespace) -> list[tuple[str, Path]]:
     default_c = 24
     default_l = 3
+    default_o = 3
     if args.channels is None:
         print("\nCustom NPU architecture (npu_sequential)")
         print("  Sweep sweet-spot widths: C8 / C16 / C24 / C32")
@@ -267,12 +275,19 @@ def choose_custom_model(root: Path, args: argparse.Namespace) -> list[tuple[str,
     else:
         layers = int(args.layers)
 
+    if args.output_channels is None:
+        print("  O3 = original RGB residual; O4/O6 = learned GPU-decoder latent")
+        raw_o = input(f"Output channels O [{default_o}]: ").strip() or str(default_o)
+        output_channels = _parse_positive_int(raw_o, "Output channels O", 3)
+    else:
+        output_channels = int(args.output_channels)
+
     epochs = args.epochs
     if epochs is None and args.channels is None and args.layers is None:
         raw_epochs = input("Epochs [100]: ").strip()
         epochs = _parse_positive_int(raw_epochs, "Epochs", 1) if raw_epochs else 100
 
-    name, cfg = make_custom_config(root, channels, layers, epochs=epochs, name=args.name)
+    name, cfg = make_custom_config(root, channels, layers, output_channels, epochs=epochs, name=args.name)
     return [(name, cfg)]
 
 
@@ -293,7 +308,7 @@ def choose_models(choice: str | None, root: Path, args: argparse.Namespace) -> l
     print("  2. NPU Quality (legacy preset: C8-L14)")
     print("  3. Legacy Tiny-C8 (compatibility only)")
     print("  4. Train both legacy NPU presets")
-    print("  5. Custom NPU architecture (choose C and L)  <-- recommended")
+    print("  5. Custom NPU architecture (choose C, L and O)  <-- recommended")
     selected = input("Model [5]: ").strip() or "5"
     return choose_models(selected, root, args)
 
@@ -444,6 +459,7 @@ def one_model(root: Path, name: str, config_path: Path, log_file: Path, args: ar
         ]
         if bool(config.get("deployment", {}).get("core_only", False)):
             int8_arguments.append("--require-core-only")
+            int8_arguments += ["--output-channels", str(int(config.get("model", {}).get("output_channels", 3)))]
         run(
             quark_python_cmd(root, "int8_ptq.py", *int8_arguments),
             log_file,
@@ -483,6 +499,7 @@ def main() -> None:
     parser.add_argument("--model", default=None, help="fast/quality/custom/1/2/3/4/5/all")
     parser.add_argument("--channels", type=int, default=None, help="custom NPU width C; use together with --layers")
     parser.add_argument("--layers", type=int, default=None, help="custom NPU total Conv count L; use together with --channels")
+    parser.add_argument("--output-channels", type=int, default=None, help="custom NPU output channels O (3, 4, 6, etc.)")
     parser.add_argument("--epochs", type=int, default=None, help="override epochs for a custom C/L run")
     parser.add_argument("--name", default=None, help="optional custom profile name; default gamesr-c{C}-l{L}")
     parser.add_argument("--source", default=None)
@@ -492,8 +509,9 @@ def main() -> None:
     parser.add_argument("--reprepare", action="store_true")
     parser.add_argument("--no-auto-resume", action="store_true")
     args = parser.parse_args()
-    if (args.channels is None) != (args.layers is None):
-        raise SystemExit("--channels and --layers must be supplied together.")
+    supplied = (args.channels is not None, args.layers is not None, args.output_channels is not None)
+    if any(supplied) and not all(supplied):
+        raise SystemExit("--channels, --layers and --output-channels must be supplied together.")
     if args.channels is not None and args.model is None:
         args.model = "custom"
 
@@ -503,7 +521,7 @@ def main() -> None:
     log_file = log_root / f"pipeline-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log"
 
     print("=" * 72)
-    print(" GameSR v1.7.6 | C/L selector + train/validation RAM cache + NPU export")
+    print(" GameSR | C/L/O selector + one-click train/export/package")
     print("=" * 72)
     run(python_cmd(root, "check_env.py"), log_file, "[0/8] Checking training environment")
     ensure_dataset(root, args.source, log_file, reprepare=args.reprepare)

@@ -15,8 +15,8 @@ if not exist ".venv\Scripts\python.exe" (
 set "PYTHON=.venv\Scripts\python.exe"
 echo ============================================================
 echo GameSR v1.8.2 Late-Polish / Information-Aware Training
-echo Recommended sweep widths: C8 / C16 / C24 / C32
-echo Example candidates: C8-L5, C16-L4, C24-L3, C32-L3
+echo Choose C (width), L (Conv layers), and O (output channels)
+echo Recommended first test: C16-L4-O4. Original compatible mode: O3
 echo v1.8.2: Late Polish + Information-aware L1 + Detail Hard Mining + Masked HF
 echo Remote dataset: train cache + validation tensor cache, auto RAM sizing
 echo ============================================================

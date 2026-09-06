@@ -37,6 +37,8 @@ def validate_config(config: object, source: Path | None = None) -> None:
         raise ValueError(f"{label}: unsupported model architecture '{architecture}'")
     if int(model.get("channels", 0)) < 1:
         raise ValueError(f"{label}: model.channels must be at least 1")
+    if int(model.get("output_channels", 3)) < 3:
+        raise ValueError(f"{label}: model.output_channels (O) must be at least 3")
     if architecture == "npu_sequential":
         if int(model.get("conv_layers", 0)) < 2:
             raise ValueError(f"{label}: npu_sequential requires model.conv_layers >= 2")

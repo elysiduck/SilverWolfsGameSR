@@ -80,6 +80,7 @@ def main():
     import yaml
     config = yaml.safe_load(config_path.read_text(encoding='utf-8'))
     core_only = bool(config.get('deployment', {}).get('core_only', False))
+    output_channels = int(config.get('model', {}).get('output_channels', 3))
     src_dir = root / 'models'
     out = root / 'deployment' / name
     out.mkdir(parents=True, exist_ok=True)
@@ -88,6 +89,13 @@ def main():
     for suffix in [f'{name}-720p-to-1080p.onnx', f'{name}-720p-to-1080p.onnx.data', f'{name}-720p-to-1080p-fp16.onnx', f'{name}-720p-to-1080p-fp16.onnx.data']:
         if copy_if_exists(src_dir / suffix, out / suffix):
             files.append(suffix)
+
+    decoder_name = f'{name}-720p-to-1080p.onnx.decoder.json'
+    decoder_path = src_dir / decoder_name
+    if output_channels > 3:
+        if not copy_if_exists(decoder_path, out / decoder_name):
+            raise SystemExit(f'[FAIL] Learned decoder metadata is missing: {decoder_path}')
+        files.append(decoder_name)
 
     int8_name = f'{name}-720p-to-1080p-int8-qdq.onnx'
     int8_path = src_dir / int8_name
@@ -114,22 +122,28 @@ def main():
             raise SystemExit(f'[FAIL] NPU deployment requires a validated core-only XINT8 model: {int8_reason}')
 
     result = {
-        'schema_version': 3,
+        'schema_version': 4,
         'created': datetime.now().isoformat(),
         'model': name,
         'input': {'shape': [1, 3, 720, 1280], 'layout': 'NCHW', 'dtype': 'float32'},
         'output': {
-            'shape': [1, 3, 720, 1280] if core_only else [1, 3, 1080, 1920],
+            'shape': [1, output_channels, 720, 1280] if core_only else [1, 3, 1080, 1920],
             'layout': 'NCHW',
             'dtype': 'float32',
-            'meaning': 'low_resolution_rgb_residual' if core_only else 'display_rgb',
+            'meaning': ('low_resolution_rgb_residual' if output_channels == 3 else 'low_resolution_latent') if core_only else 'display_rgb',
         },
         'deployment_contract': config.get('deployment', {}).get('postprocess', 'complete_image_v1'),
         'core_only': core_only,
         'postprocess': {
             'owner': 'Magpie shader' if core_only else 'ONNX graph',
-            'formula': 'clamp(bilinear(lr, 1.5) + bilinear(residual_lr, 1.5), 0, 1)' if core_only else None,
+            'formula': (
+                'clamp(bilinear(lr, 1.5) + bilinear(residual_lr, 1.5), 0, 1)'
+                if core_only and output_channels == 3 else
+                'clamp(bilinear(lr, 1.5) + decoder_1x1(bilinear(latent_lr, 1.5)), 0, 1)'
+                if core_only else None
+            ),
             'coordinate_mode': 'half_pixel / align_corners=false' if core_only else None,
+            'decoder_file': decoder_name if core_only and output_channels > 3 else None,
         },
         'models': files,
         'int8': {

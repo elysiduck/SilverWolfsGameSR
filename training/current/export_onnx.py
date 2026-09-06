@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -62,7 +63,8 @@ def main() -> None:
     elif args.full_output:
         core_only = False
     export_model = CoreOnlyExport(model) if core_only else model
-    output_name = "residual_lr" if core_only else "sr"
+    output_channels = int(config.get("model", {}).get("output_channels", 3))
+    output_name = ("residual_lr" if output_channels == 3 else "latent_lr") if core_only else "sr"
 
     lr_h, lr_w = 720, 1280
     example = torch.rand(1, 3, lr_h, lr_w)
@@ -101,8 +103,24 @@ def main() -> None:
     print(f"ONNX OK: {args.output} ({args.output.stat().st_size / 1024**2:.2f} MiB)")
     print("Input:  [1, 3, 720, 1280] RGB FP32 [0,1]")
     if core_only:
-        print("Output: [1, 3, 720, 1280] RGB FP32 residual (not a display image)")
-        print("Contract: display = clamp(bilinear(lr, 1.5) + bilinear(residual_lr, 1.5), 0, 1)")
+        print(f"Output: [1, {output_channels}, 720, 1280] FP32 " + ("RGB residual" if output_channels == 3 else "latent"))
+        if output_channels == 3:
+            print("Contract: display = clamp(bilinear(lr, 1.5) + bilinear(residual_lr, 1.5), 0, 1)")
+        else:
+            decoder_path = args.output.with_suffix(args.output.suffix + ".decoder.json")
+            decoder = model.decoder
+            payload = {
+                "schema_version": 1,
+                "type": "bilinear_then_1x1",
+                "input_channels": output_channels,
+                "output_channels": 3,
+                "coordinate_mode": "half_pixel_align_corners_false",
+                "weight": decoder.weight.detach().cpu().view(3, output_channels).tolist(),
+                "bias": decoder.bias.detach().cpu().tolist(),
+            }
+            decoder_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            print(f"Decoder: {decoder_path}")
+            print("Contract: display = clamp(bilinear(lr, 1.5) + decoder_1x1(bilinear(latent_lr, 1.5)), 0, 1)")
         print("[PASS] Core-only export: Resize/Add/Clip are outside the ONNX graph")
     else:
         print("Output: [1, 3, 1080, 1920] RGB FP32 [0,1]")

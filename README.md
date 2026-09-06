@@ -19,10 +19,11 @@ SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是�
 - Magpie Pipeline v4.1：异步 NPU worker / latest-frame-wins / 三槽流水线
 - Current Input：NPU 直接接收当前捕获分辨率，不再强制把 1280×720 预缩放为 960×540
 - 当前补丁：`magpie/patches/pipeline-v4.1.1-async-npu-current-input/`
+- **训练主线 CLO v1.0**：`training/current/` 的 C/L/O 三维自定义训练选择器（O3 = RGB 残差 + GPU Bilinear；O4/O6 = learned 1×1 GPU decoder）。入口 `training/一键训练-选择C-L-O.cmd`。
 
 ## 当前源码基线
 
-- Training：`training/current/`，v1.8.2
+- Training：`training/current/`，**CLO v1.0**（在 v1.8.2 训练包基础上扩展 C/L/O 三维选择器；原 v1.8.2 覆盖式训练包内容已被 CLO 取代）
 - Dataset tools：`dataset-tools/collector-v3.2/`，Collector v3.2 + Cleaner v3.2.1
 - Benchmark：`benchmark/xdna-v1.3/`，另含 105 结构 Sweep Builder/Runner 与小型结果摘要
 - Magpie：`magpie/current/full-source/`，v4.1.1 Async NPU Current Input
@@ -37,6 +38,8 @@ SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是�
 ## 文档中心
 
 GameSR 的历史迁移资料、数据采集/Cleaner、训练、Magpie/NPU 部署、Pipeline/Profiler 和上游参考资料已分类整理到 [`docs/README.md`](docs/README.md)。
+
+各训练代码版本、架构扫描/探针工具家族的作用与相互关系见 [`docs/VERSIONS.md`](docs/VERSIONS.md)（版本目录）。
 
 当前项目状态以本 README、`CHANGELOG.md`、`docs/PROJECT_MEMORY.md` 和当前补丁源码为准；`docs/archive/` 中的 v1.7、C8、Pipeline v3 等资料用于历史追溯，不代表当前主线。
 

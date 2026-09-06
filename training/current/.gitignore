@@ -1,0 +1,37 @@
+# Virtual environments
+.venv/
+.venv-quark/
+
+# Bundled tooling (e.g. uv.exe) — not source
+.tools/
+
+# Compiled bytecode
+__pycache__/
+*.pyc
+
+# Generated datasets / manifests from local data
+dataset/
+
+# Generated training artifacts, models, deployments, probe outputs
+models/
+deployment/
+output_channel_build/
+output_potential4/
+outputs/
+
+# Large model / checkpoint binaries (publish via Release, not git)
+*.onnx
+*.onnx.data
+*.pt
+*.pth
+*.ckpt
+
+# Nested archives
+*.zip
+*.rar
+
+# Images
+*.webp
+
+# Misc generated
+quantized_info.csv

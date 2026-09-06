@@ -1,9 +1,0 @@
-GameSR v1.8.1 覆盖安装
-
-1. 停止正在运行的训练。
-2. 将本补丁内文件覆盖到 gamesr-local-training 根目录。
-3. 重新运行 Train-Choose-C-L.cmd。
-4. 选择与当前模型完全相同的 C、L 和训练 profile。
-5. Auto Resume 会继续现有 latest.pth，不需要重练。
-
-这版只改变训练阶段监督方式和 degradation 分布，不改变导出的 NPU 模型结构。

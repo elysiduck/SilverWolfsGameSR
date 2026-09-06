@@ -1,2 +1,0 @@
-停止训练 -> 解压覆盖 gamesr-local-training 根目录 -> 运行 Train-Choose-C-L.cmd -> 选择相同 C/L -> Auto Resume。
-同结构 checkpoint 可直接续训；无需从头开始。

@@ -38,18 +38,22 @@ class GameSR(nn.Module):
         scale: float = 1.5,
         architecture: str = "lr_residual",
         conv_layers: int | None = None,
+        output_channels: int = 3,
     ):
         super().__init__()
         self.scale = float(scale)
         self.architecture = str(architecture)
+        self.output_channels = int(output_channels)
+        if self.output_channels < 3:
+            raise ValueError("output_channels (O) must be >= 3")
         if self.architecture == "lr_residual":
             self.head = nn.Conv2d(3, channels, 3, 1, 1)
             self.body = nn.Sequential(*(ResidualBlock(channels) for _ in range(blocks)))
-            self.tail = nn.Conv2d(channels, 3, 3, 1, 1)
+            self.tail = nn.Conv2d(channels, self.output_channels, 3, 1, 1)
         elif self.architecture == "hr_residual":
             self.head = nn.Conv2d(3, channels, 3, 1, 1)
             self.body = nn.Sequential(*(ResidualBlock(channels) for _ in range(blocks)))
-            self.tail = nn.Conv2d(channels, 3, 3, 1, 1)
+            self.tail = nn.Conv2d(channels, self.output_channels, 3, 1, 1)
         elif self.architecture == "npu_sequential":
             total_layers = int(conv_layers if conv_layers is not None else 8)
             if total_layers < 2:
@@ -60,9 +64,14 @@ class GameSR(nn.Module):
             for _ in range(total_layers - 2):
                 hidden.extend((nn.Conv2d(channels, channels, 3, 1, 1), nn.ReLU(inplace=True)))
             self.body = nn.Sequential(*hidden)
-            self.tail = nn.Conv2d(channels, 3, 3, 1, 1)
+            self.tail = nn.Conv2d(channels, self.output_channels, 3, 1, 1)
         else:
             raise ValueError(f"Unknown GameSR architecture: {self.architecture}")
+
+        # O3 keeps the original RGB-residual path exactly. O4/O6 use a tiny
+        # learned decoder that is deliberately just a 1x1 channel mix, making
+        # the later HLSL implementation a few dot products per output pixel.
+        self.decoder = nn.Conv2d(self.output_channels, 3, 1) if self.output_channels != 3 else None
 
     def forward_core(self, lr: torch.Tensor) -> torch.Tensor:
         """Return only the learned low-resolution RGB residual.
@@ -79,8 +88,9 @@ class GameSR(nn.Module):
     def forward(self, lr: torch.Tensor) -> torch.Tensor:
         base = F.interpolate(lr, scale_factor=self.scale, mode="bilinear", align_corners=False)
         if self.architecture in ("lr_residual", "npu_sequential"):
-            residual_lr = self.forward_core(lr)
-            residual = F.interpolate(residual_lr, size=base.shape[-2:], mode="bilinear", align_corners=False)
+            latent_lr = self.forward_core(lr)
+            latent = F.interpolate(latent_lr, size=base.shape[-2:], mode="bilinear", align_corners=False)
+            residual = self.decoder(latent) if self.decoder is not None else latent
         else:
             feat = F.relu(self.head(base), inplace=True)
             residual = self.tail(self.body(feat))
@@ -97,4 +107,5 @@ def build_model(config: dict) -> GameSR:
         scale=float(config.get("scale", 1.5)),
         architecture=str(model_config.get("architecture", "lr_residual")),
         conv_layers=model_config.get("conv_layers"),
+        output_channels=int(model_config.get("output_channels", 3)),
     )

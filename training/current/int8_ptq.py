@@ -222,6 +222,7 @@ def main() -> None:
     parser.add_argument("--height", type=int, default=720)
     parser.add_argument("--config", default="XINT8", choices=("XINT8",))
     parser.add_argument("--require-core-only", action="store_true")
+    parser.add_argument("--output-channels", type=int, default=3)
     args = parser.parse_args()
 
     model_path = args.model.resolve()
@@ -292,7 +293,7 @@ def main() -> None:
         remove_if_present(Path(str(temporary_path) + "_data"))
 
     meta = {
-        "schema_version": 3,
+        "schema_version": 4,
         "created": datetime.now().isoformat(),
         "builder_version": BUILDER_VERSION,
         "builder": "AMD Quark for ONNX",
@@ -308,13 +309,16 @@ def main() -> None:
         "calibration_count": len(paths),
         "seed": args.seed,
         "input_shape": [1, 3, args.height, args.width],
+        "output_shape": [1, args.output_channels, args.height, args.width] if args.require_core_only else [1, 3, 1080, 1920],
         "quantization_config": args.config,
         "target": "AMD Ryzen AI NPU CNN",
         "graph_validation": report,
         "requires_handheld_profile_validation": True,
         "deployment_contract": (
-            "magpie_bilinear_residual_v1" if args.require_core_only else "complete_image_v1"
+            ("magpie_bilinear_residual_v1" if args.output_channels == 3 else "magpie_learned_1x1_decoder_v1")
+            if args.require_core_only else "complete_image_v1"
         ),
+        "output_channels": args.output_channels,
         "core_only": bool(args.require_core_only),
     }
     meta_path = out_path.with_suffix(out_path.suffix + ".meta.json")
