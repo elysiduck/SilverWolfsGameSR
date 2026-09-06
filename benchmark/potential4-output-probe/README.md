@@ -2,6 +2,15 @@
 
 This focused experiment selects four survivors from the 105-architecture sweep—C8-L5, C16-L4, C24-L3 and C32-L3—and evaluates output widths O3, O4, O6 and O8. Every comparison is against O3 of the **same** backbone. It measures pure NPU ONNX/VitisAI runtime cost only, not Magpie map/stitch/upload, decoder cost or image quality.
 
+## Average NPU latency (ms)
+
+| Backbone (C-L) | O3 | O4 | O6 | O8 |
+| --- | ---: | ---: | ---: | ---: |
+| **C8-L5** | 7.074 | 7.216 | **7.694** | 8.037 |
+| **C16-L4** | **7.044** | **7.182** | **7.738** | **7.976** |
+| **C24-L3** | 7.301 | 7.455 | 7.899 | 8.224 |
+| **C32-L3** | 8.100 | 8.291 | 8.714 | 9.007 |
+
 | Backbone | O3 | O4 delta | O6 delta | O8 delta |
 | --- | ---: | ---: | ---: | ---: |
 | C8-L5 | 7.0740 ms | +2.012% | +8.772% | +13.613% |
