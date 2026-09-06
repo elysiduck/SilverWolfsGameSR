@@ -1,0 +1,8 @@
+SilverWolfsGameSR Magpie build
+Build ID: magpie-v4.3-phase3x3-folders
+Base: Magpie-SESR-GameSR-v4.1.1-AsyncNPU-CurrentInput
+Pipeline: independent GameSR current-input NPU + async 3-slot pipeline
+Modes: O3 RGB residual / O4-O6-O8 latent + GPU legacy 1x1 or phase-aware 3x3 decoder
+Model library: recursive models\GameSR subfolders with safe relative-path binding
+Compatibility: v4.2.6 SIMD retained; legacy SESR, O3 and legacy O4/O6/O8 1x1 retained
+Status: Release x64 compile verified
