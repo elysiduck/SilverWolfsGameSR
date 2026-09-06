@@ -1,0 +1,22 @@
+﻿GameSR NPU Output Channel Probe v1.0.2
+============================================================
+Fixed body: C16-L4
+Input: 1x3x720x1280
+Warmup/Runs: 5/120
+
+This test isolates the cost of changing ONLY the final output width.
+It does NOT measure Magpie output Map/stitch/upload or a learned GPU decoder.
+
+Results:
+  O3  status=NPU_ONLY     avg=   7.0105 ms  P95=   7.3200 ms  delta-vs-O3=    0.000%  output=10.547 MiB  x1.000
+  O4  status=NPU_ONLY     avg=   6.7868 ms  P95=   7.1005 ms  delta-vs-O3=   -3.192%  output=14.063 MiB  x1.333
+  O6  status=NPU_ONLY     avg=   7.0749 ms  P95=   7.4169 ms  delta-vs-O3=   +0.919%  output=21.094 MiB  x2.000
+  O8  status=NPU_ONLY     avg=   7.6792 ms  P95=   7.9588 ms  delta-vs-O3=   +9.537%  output=28.125 MiB  x2.667
+
+Interpretation:
+  - O4 near O3: NPU-side cost of the proposed C4 feature output is small.
+  - O4 jumps sharply: final-channel shape changes NPU mapping/writeback and needs redesign.
+  - O6/O8 are stress points to reveal whether the cost is roughly linear or has XDNA alignment cliffs.
+
+CSV : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Output-Channel-Probe-20260906-121534-OUTPUT-CHANNELS.csv
+FULL: D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Output-Channel-Probe-20260906-121534-FULL.json

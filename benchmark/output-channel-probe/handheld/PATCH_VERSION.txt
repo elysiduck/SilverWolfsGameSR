@@ -1,0 +1,2 @@
+GameSR-XDNA v1.3 OutputChannelProbe Patch v1.0.2
+Handheld extraction/MAX_PATH fix

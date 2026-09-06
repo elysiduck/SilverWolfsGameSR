@@ -1,0 +1,9 @@
+GameSR Output Channel Probe Runner v1.0.2 FIX
+
+Fixes handheld payload extraction failure in Windows PowerShell 5.1:
+- uses a short cache path: <benchmark>\_ocp\<16-char-sha256>
+- removes incomplete/stale cache automatically
+- extracts into a temporary directory first, then atomically moves it into cache
+- intentionally avoids Expand-Archive -Force, bypassing its overwrite/Remove-Item failure path
+
+No model-generation logic or benchmark methodology changed.
