@@ -1,0 +1,47 @@
+﻿GameSR Architecture Sweep Runner v1.0.2
+============================================================
+Finished: 2026-09-05 16:58:37
+Payload: D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\sweep_payload_cache\GameSR-NPU-Architecture-Sweep-Models-105-20260905-010613-93e738c7f68c68be\handheld_payload
+Builder: GameSR NPU Architecture Sweep Builder v1.0
+Input: 1x3x720x1280
+Warmup/Runs: 20 / 600, concurrency=1, cooldown=1s
+Models: 105, NPU_ONLY: 105
+
+TOP 30 - NPU_ONLY / lowest average latency:
+ 1. C4-L2      C4  L2  avg   7.6086 ms  P95   8.0877 ms  FPS   131.38  eff     26.16 GMAC/s    0.199 GMAC
+ 2. C8-L2      C8  L2  avg   7.7344 ms  P95   8.1467 ms  FPS   129.24  eff     51.48 GMAC/s    0.398 GMAC
+ 3. C6-L2      C6  L2  avg   7.8023 ms  P95   8.1325 ms  FPS   128.12  eff     38.27 GMAC/s    0.299 GMAC
+ 4. C14-L2     C14 L2  avg   7.8712 ms  P95   8.2648 ms  FPS   127.00  eff     88.52 GMAC/s    0.697 GMAC
+ 5. C16-L2     C16 L2  avg   7.9151 ms  P95   8.3719 ms  FPS   126.29  eff    100.60 GMAC/s    0.796 GMAC
+ 6. C24-L2     C24 L2  avg   8.5211 ms  P95   9.0510 ms  FPS   117.32  eff    140.17 GMAC/s    1.194 GMAC
+ 7. C22-L2     C22 L2  avg   8.5352 ms  P95   8.9972 ms  FPS   117.13  eff    128.28 GMAC/s    1.095 GMAC
+ 8. C4-L3      C4  L3  avg   8.6678 ms  P95   9.0474 ms  FPS   115.33  eff     38.28 GMAC/s    0.332 GMAC
+ 9. C8-L3      C8  L3  avg   8.8018 ms  P95   9.2611 ms  FPS   113.58  eff    105.54 GMAC/s    0.929 GMAC
+10. C6-L3      C6  L3  avg   8.8110 ms  P95   9.2732 ms  FPS   113.46  eff     67.78 GMAC/s    0.597 GMAC
+11. C32-L2     C32 L2  avg   8.9393 ms  P95   9.3912 ms  FPS   111.83  eff    178.15 GMAC/s    1.593 GMAC
+12. C30-L2     C30 L2  avg   8.9464 ms  P95   9.3558 ms  FPS   111.74  eff    166.88 GMAC/s    1.493 GMAC
+13. C14-L3     C14 L3  avg   9.1663 ms  P95   9.5931 ms  FPS   109.05  eff    253.37 GMAC/s    2.322 GMAC
+14. C16-L3     C16 L3  avg   9.1834 ms  P95   9.6463 ms  FPS   108.86  eff    317.93 GMAC/s    2.920 GMAC
+15. C4-L4      C4  L4  avg   9.6263 ms  P95  10.0448 ms  FPS   103.85  eff     48.25 GMAC/s    0.464 GMAC
+16. C6-L4      C6  L4  avg   9.8711 ms  P95  10.2750 ms  FPS   101.28  eff     90.75 GMAC/s    0.896 GMAC
+17. C8-L4      C8  L4  avg   9.8980 ms  P95  10.3528 ms  FPS   101.00  eff    147.49 GMAC/s    1.460 GMAC
+18. C12-L2     C12 L2  avg  10.2665 ms  P95  10.6993 ms  FPS    97.38  eff     58.17 GMAC/s    0.597 GMAC
+19. C10-L2     C10 L2  avg  10.2786 ms  P95  10.6860 ms  FPS    97.26  eff     48.42 GMAC/s    0.498 GMAC
+20. C22-L3     C22 L3  avg  10.3664 ms  P95  10.7975 ms  FPS    96.44  eff    492.88 GMAC/s    5.109 GMAC
+21. C24-L3     C24 L3  avg  10.4132 ms  P95  10.8572 ms  FPS    96.01  eff    573.50 GMAC/s    5.972 GMAC
+22. C16-L4     C16 L4  avg  10.4383 ms  P95  10.9512 ms  FPS    95.78  eff    483.12 GMAC/s    5.043 GMAC
+23. C14-L4     C14 L4  avg  10.4455 ms  P95  10.8350 ms  FPS    95.71  eff    377.98 GMAC/s    3.948 GMAC
+24. C4-L5      C4  L5  avg  10.6539 ms  P95  11.0425 ms  FPS    93.84  eff     56.05 GMAC/s    0.597 GMAC
+25. C28-L2     C28 L2  avg  10.9183 ms  P95  11.4047 ms  FPS    91.57  eff    127.63 GMAC/s    1.393 GMAC
+26. C20-L2     C20 L2  avg  10.9260 ms  P95  11.3392 ms  FPS    91.50  eff     91.10 GMAC/s    0.995 GMAC
+27. C8-L5      C8  L5  avg  10.9377 ms  P95  11.4761 ms  FPS    91.40  eff    182.00 GMAC/s    1.991 GMAC
+28. C26-L2     C26 L2  avg  10.9392 ms  P95  11.3652 ms  FPS    91.39  eff    118.28 GMAC/s    1.294 GMAC
+29. C18-L2     C18 L2  avg  10.9393 ms  P95  11.4481 ms  FPS    91.39  eff     81.89 GMAC/s    0.896 GMAC
+30. C6-L5      C6  L5  avg  10.9939 ms  P95  11.4100 ms  FPS    90.93  eff    108.64 GMAC/s    1.194 GMAC
+
+Ranking          : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Architecture-Sweep-20260905-161928-RANKING.csv
+Full JSON        : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Architecture-Sweep-20260905-161928-FULL.json
+Latency matrix   : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Architecture-Sweep-20260905-161928-LATENCY-MATRIX.csv
+Efficiency matrix: D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Architecture-Sweep-20260905-161928-EFFICIENCY-MATRIX.csv
+Best/channel     : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Architecture-Sweep-20260905-161928-BEST-BY-CHANNEL.csv
+Best/layer       : D:\Game SR\GameSR-XDNA-Architecture-Benchmark-v1.3\GameSR-XDNA-Architecture-Benchmark-v1.3\results\GameSR-NPU-Architecture-Sweep-20260905-161928-BEST-BY-LAYER.csv

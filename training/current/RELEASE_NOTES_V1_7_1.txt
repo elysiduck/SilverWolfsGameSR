@@ -1,0 +1,6 @@
+GameSR training code v1.7.1
+
+Reliability fix for the first real NPU Fast/Quality training run.
+No model architecture or deployment contract was changed.
+
+See README_V1_7_1.md for the complete fix list.

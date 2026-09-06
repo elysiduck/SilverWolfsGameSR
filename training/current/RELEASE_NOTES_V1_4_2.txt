@@ -1,0 +1,11 @@
+GameSR Training Code v1.4.2
+
+Hotfix + reliability release.
+
+- Forces UTF-8/replace-safe Python stdout/stderr for Windows ONNX export.
+- GameSR_Train.cmd and Benchmark_Training.cmd now set UTF-8 environment variables.
+- Added GameSR_Export.cmd for one-command re-export from an existing best.pth.
+- Added ONNX_Validate.cmd / validate_onnx.py for graph validation and external-data checks.
+- export_onnx.py explicitly supports --use-ema and --no-ema and validates external data.
+- Pipeline subprocesses inherit UTF-8-safe environment and decode output as UTF-8 with replacement.
+- Existing checkpoints and dataset manifests are not modified by the hotfix.

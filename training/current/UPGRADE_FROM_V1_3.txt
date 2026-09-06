@@ -1,0 +1,21 @@
+GameSR Training Code v1.4
+
+Major changes:
+1. Benchmark_Training.cmd can now be launched directly without arguments.
+2. If dataset/train.csv, val.csv, or test.csv is missing, the benchmark pipeline asks for the clean screenshot folder and prepares the manifests automatically.
+3. Benchmark cache is validated with a signature that includes model/config, data split fingerprint, degradation, loss settings, benchmark steps/warmup, and runtime-related settings.
+4. Failed benchmark runs are never treated as valid cache and never allow training to start.
+5. GameSR_Train.cmd automatically reads valid cached benchmark results, displays every tested batch, and lets the user choose a batch. Enter accepts the fastest valid batch.
+6. Each model has a separate cache: tiny-c8.json, balanced-c12.json, quality-c16.json, under the detected GPU name.
+7. --force-benchmark forces a fresh benchmark.
+8. Benchmark now follows the real training loss path: L1 + edge + periodic SSIM, with GPU-side game degradation.
+9. Training configs keep game-oriented degradation, EMA, AMP, TF32, channels-last, pinned memory, persistent workers, and prefetching.
+10. Training and benchmark failures are fail-fast; an invalid benchmark cannot silently produce a recommended batch.
+11. Full evaluation remains PSNR + SSIM on the full test set and ONNX export remains fixed 720p -> 1080p.
+
+Backward compatibility:
+- Existing dataset CSVs can be reused.
+- Existing v1.2/v1.4 checkpoints can still be loaded by train.py where architecture/config is compatible, but v1.4 changes in degradation/loss mean fresh v1.4 runs are recommended for formal comparison.
+
+Additional v1.4 architecture change:
+- New default `lr_residual` architecture performs the learned feature stack at LR resolution and upsamples only the 3-channel residual before adding it to the bilinear base. This is substantially cheaper than the former HR-resolution residual stack and is intended to improve training/inference efficiency while preserving the NPU-friendly residual design.

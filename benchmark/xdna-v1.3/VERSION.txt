@@ -1,0 +1,8 @@
+GameSR XDNA Architecture Benchmark v1.3
+
+- Restores the proven GameSR Benchmark v2.4.1 onnxruntime_perf_test path.
+- Removes the incompatible custom C++ runner from v1.2.
+- Rebuilds all five probes from the exact GameSR v1.7.1 PyTorch model class.
+- Uses AMD Quark 0.12.post1 XINT8 with distinct realistic PyTorch biases.
+- Adds a one-run CPU model smoke test.
+- Adds the known-working Magpie SESR XINT8 model as an NPU runtime control.

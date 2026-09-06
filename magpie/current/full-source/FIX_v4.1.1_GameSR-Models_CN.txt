@@ -1,0 +1,18 @@
+v4.1.1 构建修复
+================
+
+修复错误：
+
+  MSB3030: 无法复制 GameSR-Models\README_CN.txt，原因是找不到该文件。
+
+原因是 v4/v4.1 源码补丁修改了 Magpie.vcxproj，使构建阶段必须复制该说明文件，
+但补丁包本身没有携带 GameSR-Models 目录。
+
+本修正版：
+
+1. 补齐 GameSR-Models\README_CN.txt；
+2. 构建时自动创建 publish\x64\models\GameSR；
+3. 自动复制 GameSR-Models 中的 .onnx 和 .onnx.data；
+4. 构建结束时验证模型库说明文件确实进入 publish 输出。
+
+不需要再覆盖 v3、v4 或 v4.1 补丁。直接使用本完整源码包重新构建。

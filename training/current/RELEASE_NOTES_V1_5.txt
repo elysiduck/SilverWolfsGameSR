@@ -1,0 +1,8 @@
+GameSR Training Code v1.5
+
+- PC-side INT8/QDQ PTQ integrated into the training pipeline.
+- Optional FP16 ONNX conversion added.
+- Deployment bundle now copies FP32, FP16, and INT8 candidates when present.
+- Calibration happens only on the PC; handheld never needs clean data or Python/.venv.
+- One-click pipeline: benchmark -> train -> full test -> FP32 ONNX -> FP16 candidate -> INT8/QDQ -> deployment bundle.
+- Float model/checkpoint are preserved if a deployment conversion fails.

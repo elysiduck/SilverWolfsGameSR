@@ -1,0 +1,26 @@
+GameSR Cleaner V3.2.1 空间统计小补丁
+======================================
+
+安装：
+
+1. 先关闭 Collector 和 Cleaner 窗口。
+2. 把本压缩包内的 cleaner.py、dataset_audit.py、test_pipeline.py
+   复制到 GameSR_Dataset_Collector_V3_2 主目录。
+3. Windows 询问时选择“替换目标中的文件”。
+4. 不要复制到 GameSR_Dataset 数据文件夹里。
+5. 双击 run_self_test.bat；看到 ALL TESTS PASSED 即安装成功。
+
+补丁不会删除或重新复制已有图片，也不会改变 KEEP/REVIEW/REJECT 判断。
+
+运行 run_cleaner.bat 后，终端和 reports/summary.json 会显示本轮：
+
+- hardlinks_created：硬链接成功数量；
+- copies_created：退回复制数量；
+- hardlink_bytes_saved：估算节省的字节数；
+- copied_bytes：普通复制额外占用的字节数。
+
+运行 run_audit.bat 后，dataset_audit.json 和 dataset_audit.html 会检查
+当前所有 KEEP/REVIEW 文件，显示硬链接、普通复制、节省空间和缺失文件。
+
+如果 Cleaner 显示 SKIP，表示图片之前已经处理过，因此“本轮新建”统计可能为0；
+run_audit.bat 仍会统计全部已有文件。

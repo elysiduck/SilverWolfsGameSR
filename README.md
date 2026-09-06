@@ -20,6 +20,16 @@ SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是�
 - Current Input：NPU 直接接收当前捕获分辨率，不再强制把 1280×720 预缩放为 960×540
 - 当前补丁：`magpie/patches/pipeline-v4.1.1-async-npu-current-input/`
 
+## 当前源码基线
+
+- Training：`training/current/`，v1.8.2
+- Dataset tools：`dataset-tools/collector-v3.2/`，Collector v3.2 + Cleaner v3.2.1
+- Benchmark：`benchmark/xdna-v1.3/`，另含 105 结构 Sweep Builder/Runner 与小型结果摘要
+- Magpie：`magpie/current/full-source/`，v4.1.1 Async NPU Current Input
+- 历史 Magpie v2.1：`magpie/archive/v2.1/`
+
+模型、checkpoint、厂商运行时和大型 benchmark 输出不进入 Git，见 [`ARTIFACTS.md`](ARTIFACTS.md)。
+
 ## 文档中心
 
 GameSR 的历史迁移资料、数据采集/Cleaner、训练、Magpie/NPU 部署、Pipeline/Profiler 和上游参考资料已分类整理到 [`docs/README.md`](docs/README.md)。

@@ -1,0 +1,7 @@
+GameSR Training Code v1.5.3
+
+Hotfix for INT8 PTQ on Windows/ONNX Runtime.
+- Keeps the temporary self-contained PTQ input model shape-inferred in Python.
+- Sets ORT extra option DisableShapeInference=True to prevent the inferred-inferred filename bug.
+- Cleans up temporary PTQ artifacts after successful or failed runs where possible.
+- Preserves the v1.5 PC-side INT8/QDQ workflow and handheld-independent deployment design.

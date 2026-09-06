@@ -1,0 +1,60 @@
+GameSR XDNA Architecture Benchmark v1.3
+========================================
+
+这版为什么重做
+--------------
+v1.2 的自编译 C++ Runner 在进入 ORT 日志前就发生 0xC0000005，说明该程序与
+Windows ORT/VitisAI 二进制接口不兼容。v1.3 已彻底删除它，恢复以前实际成功使用的：
+
+  AMD 自带 onnxruntime_perf_test.exe
+  + GameSR Benchmark v2.4.1 PowerShell 调用方式
+  + ORT profile 检查 NPU/CPU 节点
+
+五个探针也不再由手写 ONNX 生成，而是直接使用训练代码 v1.7.1 中真实的
+GameSR(architecture="npu_sequential") PyTorch 类导出，再由 AMD Quark XINT8 量化。
+
+一键运行
+--------
+1. 把整个压缩包完整解压到新文件夹，不要覆盖 v1.0/v1.1/v1.2。
+2. 接通电源并固定掌机性能模式，关闭游戏、视频和其他 AI 程序。
+3. 双击 RUN-XDNA-ARCHITECTURE-BENCHMARK.cmd。
+4. 任务管理器打开后切到“性能 -> NPU”，回到黑色窗口按 Enter。
+5. 等待两项诊断和五组测试全部结束。
+6. 把整个 results 文件夹压缩后发回。
+
+开头两项诊断
+------------
+DIAGNOSTIC 1：CPU 只加载并运行一次 A 探针。
+  PASS 说明 ONNX 本身能被同一个 perf_test 正常读取。
+
+DIAGNOSTIC 2：用原 Benchmark 跑 Magpie 中已经证明可全量放到 NPU 的 SESR 模型。
+  NPU_ONLY 说明 perf_test、VitisAI、驱动和 NPU 调用链正常。
+
+组合判断：
+  CPU PASS + control NPU_ONLY + 五探针失败
+    => 问题在 720p GameSR 图形映射/编译，不是 Benchmark 程序。
+
+  CPU PASS + control 也失败
+    => perf_test 的 VitisAI 路径在当前系统不可靠；日志可继续定位具体阶段。
+
+  CPU FAIL
+    => 探针文件或 ORT 模型兼容性有问题。
+
+正式排名
+--------
+只有 status=NPU_ONLY 的模型会进入排名。
+
+A：C8  x 8 层，3947 参数（当前 Fast 基线）
+B：C12 x 6 层，5895 参数
+C：C16 x 4 层，5523 参数
+D：C16 x 6 层，10163 参数
+E：C24 x 4 层，11739 参数
+
+average_ms 越低越好。relative_speed_vs_A 大于 1 表示比 A 更快。
+任务管理器占用率只作为辅助观察，不代替延迟排名。
+
+快速排错命令
+------------
+RUN-XDNA-ARCHITECTURE-BENCHMARK.cmd -Warmup 3 -Runs 30 -NoTaskManager
+
+正式默认值是每组预热 20 次、测量 600 次。

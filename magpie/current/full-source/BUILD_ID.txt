@@ -1,0 +1,9 @@
+SilverWolfsGameSR Magpie canonical build
+Build ID: magpie-v2.1-pipeline-v4.1.1-async-npu-current-input
+Base: SESR-M7-ONNX-NPU-v2.1
+Pipeline: v4.1 Async NPU + Current Input + GameSR-Models build fix
+Model contract: GameSR contract v3
+Status: CURRENT
+
+This is the only Magpie source patch that should be applied to the local working tree.
+Older versions belong in GitHub history/tags, not separate runnable folders.

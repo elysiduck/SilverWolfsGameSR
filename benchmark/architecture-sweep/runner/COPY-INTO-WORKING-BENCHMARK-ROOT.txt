@@ -1,0 +1,8 @@
+Copy ALL files from this folder into the SAME benchmark root on the handheld that successfully produced results-bm-5.
+
+That destination must already contain:
+  runtime\bin\onnxruntime_perf_test.exe
+  runtime\vaip_config_stride.json
+  runtime\AMD_AIE2P_4x4_Overlay.xclbin
+
+No Python is needed on the handheld.

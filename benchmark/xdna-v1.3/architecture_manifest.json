@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "benchmark": "GameSR XDNA Architecture Benchmark v1.3",
+  "contract": "NCHW FP32 [1,3,720,1280] -> FP32 residual [1,3,720,1280]",
+  "model_source": "Exact GameSR-training-code-v1.7.1 GameSR(npu_sequential) PyTorch class",
+  "quantization": "AMD Quark 0.12.post1 XINT8; deterministic random PyTorch weights and calibration",
+  "probes": [
+    {
+      "name": "A-C8-L8",
+      "channels": 8,
+      "conv_layers": 8,
+      "parameters": 3947,
+      "macs_720p": 3583180800,
+      "model": "models/A-C8-L8/A-C8-L8-int8-qdq.onnx",
+      "float_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "Conv": 8,
+          "Relu": 7
+        }
+      },
+      "quantized_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "QuantizeLinear": 9,
+          "DequantizeLinear": 25,
+          "Conv": 8,
+          "Relu": 7
+        }
+      }
+    },
+    {
+      "name": "B-C12-L6",
+      "channels": 12,
+      "conv_layers": 6,
+      "parameters": 5895,
+      "macs_720p": 5374771200,
+      "model": "models/B-C12-L6/B-C12-L6-int8-qdq.onnx",
+      "float_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "Conv": 6,
+          "Relu": 5
+        }
+      },
+      "quantized_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "QuantizeLinear": 7,
+          "DequantizeLinear": 19,
+          "Conv": 6,
+          "Relu": 5
+        }
+      }
+    },
+    {
+      "name": "C-C16-L4",
+      "channels": 16,
+      "conv_layers": 4,
+      "parameters": 5523,
+      "macs_720p": 5042995200,
+      "model": "models/C-C16-L4/C-C16-L4-int8-qdq.onnx",
+      "float_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "Conv": 4,
+          "Relu": 3
+        }
+      },
+      "quantized_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "QuantizeLinear": 5,
+          "DequantizeLinear": 13,
+          "Conv": 4,
+          "Relu": 3
+        }
+      }
+    },
+    {
+      "name": "D-C16-L6",
+      "channels": 16,
+      "conv_layers": 6,
+      "parameters": 10163,
+      "macs_720p": 9289728000,
+      "model": "models/D-C16-L6/D-C16-L6-int8-qdq.onnx",
+      "float_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "Conv": 6,
+          "Relu": 5
+        }
+      },
+      "quantized_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "QuantizeLinear": 7,
+          "DequantizeLinear": 19,
+          "Conv": 6,
+          "Relu": 5
+        }
+      }
+    },
+    {
+      "name": "E-C24-L4",
+      "channels": 24,
+      "conv_layers": 4,
+      "parameters": 11739,
+      "macs_720p": 10749542400,
+      "model": "models/E-C24-L4/E-C24-L4-int8-qdq.onnx",
+      "float_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "Conv": 4,
+          "Relu": 3
+        }
+      },
+      "quantized_graph": {
+        "ir_version": 10,
+        "op_counts": {
+          "QuantizeLinear": 5,
+          "DequantizeLinear": 13,
+          "Conv": 4,
+          "Relu": 3
+        }
+      }
+    }
+  ]
+}

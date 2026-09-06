@@ -1,0 +1,10 @@
+Upgrade from v1.5.3
+===================
+
+1. Copy all v1.6 files over the existing GameSR project and choose Replace.
+2. Keep the existing .venv, dataset, models, outputs, and checkpoints.
+3. Run 01_Install_RyzenAI_INT8.cmd once.
+4. Run Build-INT8.cmd.
+5. Do not reuse the v1.5.3 INT8 model; use the newly written same-name ONNX.
+
+No retraining is required when models\<name>-720p-to-1080p.onnx already exists.

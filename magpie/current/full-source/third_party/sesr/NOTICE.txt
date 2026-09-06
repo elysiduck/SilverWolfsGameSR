@@ -1,0 +1,17 @@
+SESR-M7 NPU integration third-party notices
+
+AMD ImageTilingNPU
+Source: https://github.com/amd/ImageTilingNPU
+License: Apache License 2.0
+
+AMD SESR-M7 256x256 tiles model
+Source: https://huggingface.co/amd/sesr-m7-256x256-tiles-amdnpu
+License: Apache License 2.0
+
+The Magpie integration includes adapted portions of AMD's xmodel runner and
+the unmodified compiled SESR-M7 model artifacts supplied by the model author.
+
+AMD Ryzen AI Deployment 1.7.1
+Source: https://github.com/amd/RyzenAI-SW
+The runtime binaries are redistributed under the license included as
+licenses/AMD-RyzenAI-Deployment-License.txt.

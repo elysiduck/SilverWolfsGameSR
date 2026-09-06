@@ -1,0 +1,9 @@
+
+Node Name,Op Type,Activation,Weights,Bias
+node_conv2d,Conv,UINT8,INT8,INT8
+node_conv2d_1,Conv,UINT8,INT8,INT8
+node_conv2d_2,Conv,UINT8,INT8,INT8
+
+Op Type,Activation,Weights,Bias
+Conv,UINT8(3),INT8(3),INT8(3)
+

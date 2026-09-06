@@ -1,0 +1,22 @@
+{
+  "raw_root": "GameSR_Dataset/raw",
+  "clean_root": "GameSR_Dataset/clean",
+  "review_root": "GameSR_Dataset/review",
+  "report_root": "GameSR_Dataset/reports",
+  "expected_width": 1920,
+  "expected_height": 1080,
+  "min_mean": 6.0,
+  "min_std": 3.0,
+  "dhash_threshold": 5,
+  "phash_threshold": 7,
+  "global_dedup": true,
+  "review_quality_below": 45.0,
+  "review_flags": ["heavy_clipping", "heavy_black_border", "extreme_color_cast"],
+  "novelty_memory_size": 8192,
+  "dense_similarity": 0.985,
+  "dense_neighbor_limit": 8,
+  "low_novelty_threshold": 0.18,
+  "dense_keep_probability": 0.20,
+  "quality_override": 86.0,
+  "progress_update_seconds": 0.5
+}

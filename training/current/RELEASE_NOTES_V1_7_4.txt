@@ -1,0 +1,10 @@
+GameSR training v1.7.4
+
+- Added bounded volatile RAM read-ahead for SMB/mapped-drive training datasets.
+- Added parallel network fetch threads and parallel decode/crop threads.
+- Added background pinned batch queue.
+- Added CUDA copy-stream prefetch for the next training batch.
+- Added per-epoch stream diagnostics (read MiB/s, prefetch hit %, ready queue, batch-build time).
+- Existing manifests are reused without per-image remote stat scans.
+- Includes the v1.7.2 C/L selector plus v1.7.3 throughput/startup changes.
+- No full dataset copy to NVMe; no new Python environment required.

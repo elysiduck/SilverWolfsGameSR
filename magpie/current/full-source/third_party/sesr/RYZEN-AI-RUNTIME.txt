@@ -1,0 +1,10 @@
+AMD Ryzen AI Deployment runtime: 1.7.1
+NuGet source package: RyzenAI_Deployment.1.7.1.nupkg
+ONNX Runtime package label: 1.23.3-dev-20260320-0938-58b2075a54
+ONNX Runtime commit: 58b2075a54578015d2c573c209b2ca462228672d
+
+The ONNX Runtime commit exactly matches the commit recorded in the bundled
+SESR-M7 precompiled X1 cache context.json.
+
+Do not replace individual DLLs with files from another Ryzen AI release.
+The files in onnx/bin must be deployed as one matched set.

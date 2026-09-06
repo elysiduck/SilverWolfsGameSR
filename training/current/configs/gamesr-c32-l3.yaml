@@ -1,0 +1,136 @@
+version: 1.7.4
+project: gamesr-c32-l3
+seed: 42
+scale: 1.5
+model:
+  channels: 32
+  architecture: npu_sequential
+  conv_layers: 3
+deployment:
+  core_only: true
+  postprocess: magpie_bilinear_residual_v1
+data:
+  root: dataset
+  hr_patch: 192
+  batch_size: 16
+  workers: 6
+  prefetch_factor: 4
+  pin_memory: true
+  drop_last: true
+  augment: true
+  val_resize_kernel: lanczos
+  degradation:
+    resize_kernels:
+    - bicubic
+    - bilinear
+    - area
+    resize_kernel_weights:
+    - 0.5
+    - 0.4
+    - 0.1
+    blur_probability: 0.1
+    sharpen_probability: 0.08
+    post_sharpen_probability: 0.08
+    jpeg_probability: 0.0
+    noise_probability: 0.04
+    quantization_probability: 0.025
+    brightness_probability: 0.03
+    contrast_probability: 0.05
+    jpeg_quality:
+    - 80
+    - 96
+    noise_std:
+    - 0.2
+    - 1.0
+  val_batch_size: 16
+  streaming_prefetch:
+    enabled: auto
+    read_ahead_samples: 256
+    fetch_threads: 24
+    decode_threads: 6
+    pin_memory: true
+    batch_queue: 4
+    cuda_prefetch: true
+    persistent_cache: true
+    cache_budget_gib: auto
+    cache_reserve_gib: 8.0
+    cache_cap_gib: 12.0
+    cache_auto_fraction: 0.5
+    cache_floor_gib: 1.0
+    cache_protected_ratio: 0.8
+    emergency_free_gib: 4.0
+    next_epoch_prefetch_samples: 256
+    validation_cache: auto
+    validation_cache_budget_gib: auto
+    validation_cache_reserve_gib: 7.0
+    validation_cache_cap_gib: 1.5
+    validation_cache_auto_fraction: 0.5
+    validation_cache_floor_mib: 64.0
+    validation_read_ahead_samples: 96
+    validation_threads: 12
+    validation_pin_memory: true
+  hard_patch_mining:
+    enabled: true
+    min_fraction: 0.1
+    max_fraction: 0.25
+    min_mix: 0.06
+    max_mix: 0.2
+    weight_cap: 1.5
+    detail_floor: 0.45
+    detail_low: 0.006
+    detail_high: 0.03
+    polish_fraction: 0.15
+    polish_mix: 0.09
+  degradation_curriculum:
+    start_strength: 0.85
+    full_strength_at: 0.35
+train:
+  epochs: 120
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  warmup_epochs: 5
+  amp: true
+  channels_last: true
+  ema: true
+  ema_decay: 0.995
+  l1_weight: 1.0
+  edge_loss_weight: 0.05
+  ssim_loss_weight: 0.02
+  ssim_every_n_steps: 4
+  grad_clip: 1.0
+  save_every: 10
+  preview_every: 2
+  val_batches: 0
+  algorithm_v18:
+    enabled: true
+    game_aware_profile: v1.8.2
+    foundation_end: 0.06
+    detail_end: 0.3
+    edge_boost: 0.45
+    ssim_boost: 0.5
+    high_frequency_weight: 0.03
+    high_frequency_every_n_steps: 2
+    high_frequency_detail_aware: true
+    high_frequency_detail_floor: 0.15
+    high_frequency_detail_low: 0.006
+    high_frequency_detail_high: 0.05
+    polish_start: 0.5
+    polish_full_at: 0.75
+    polish_edge_weight: 0.0675
+    polish_ssim_weight: 0.03
+    polish_high_frequency_weight: 0.012
+    information_aware_l1:
+      enabled: true
+      low_information_weight: 0.8
+      high_information_weight: 1.15
+      flat_black_weight: 0.8
+      dark_mean_threshold: 0.12
+      flat_std_threshold: 0.035
+      min_weight: 0.75
+      max_weight: 1.25
+output: outputs/gamesr-c32-l3
+trainer_version: 1.8.2
+architecture_selection:
+  channels: 32
+  conv_layers: 3
+  source: interactive_cl_selector
