@@ -1,0 +1,42 @@
+GameSR Training v1.7.7 — Quality Diagnostics / Marginal-Gain Patch
+==================================================================
+
+Base: v1.7.6 Validation RAM Cache Patch.
+
+This release intentionally DOES NOT change:
+- model architecture / parameter count
+- degradation pipeline
+- optimizer / learning-rate scheduler
+- L1 + Edge + sparse SSIM training objective
+- EMA behavior
+- checkpoint ABI / resume compatibility
+- RAM streaming / persistent cache / validation cache
+
+New training diagnostics:
+1. Bilinear baseline PSNR on the exact same validation LR/HR pairs.
+2. Delta-PSNR (GameSR minus bilinear baseline).
+3. Mean-MSE reduction percentage versus bilinear.
+4. Validation Edge Error (same first-order gradient definition as training edge loss).
+5. Edge-strength ratio (prediction / target; 1.0 is the diagnostic center, not a value to maximize).
+6. PSNR distribution: standard deviation, P10 and minimum.
+7. SSIM P10.
+8. Validation objective using the same average component weighting as train_loss,
+   including SSIM's sparse every-N-step cadence.
+9. 1-epoch and rolling-window PSNR/SSIM marginal-gain tracking (default window: 5 epochs).
+10. Persistent outputs/quality_summary.json summary.
+11. All metrics appended to training_log.csv and TensorBoard.
+
+Compatibility:
+- Existing v1.7.6 / v1.7.5.x checkpoints can resume normally.
+- Existing YAML files do not need modification.
+- Existing first-line epoch summary remains compatible:
+  train=... val=... PSNR=... SSIM=...
+- No new Python package is required.
+
+Optional YAML setting:
+train:
+  quality_trend_window: 5
+
+The patch deliberately does NOT add LPIPS/DISTS into every epoch. Those metrics
+require extra networks/dependencies and would make the already-expensive validation
+stage slower. v1.7.7 focuses on zero-dependency, per-epoch diagnostics first.

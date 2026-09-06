@@ -1,0 +1,8 @@
+GameSR Training Code v1.6.1
+==========================
+
+- Fixed `No module named 'torch'` during AMD Quark verification.
+- Installs the exact PyTorch 2.11 CPU runtime required by the selected
+  `amd-quark-0.12.post1+cpu.torch2.11` wheel.
+- Verification now reports the PyTorch version and rejects mismatched builds.
+- Existing `.venv-quark` environments can be repaired in place.

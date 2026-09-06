@@ -1,0 +1,18 @@
+GameSR training code v1.2 upgrade notes
+
+1. Keep using GameSR-local-training-env-v1.1. No new Python package is required.
+2. Stop any old v1.1 training process before replacing the code files.
+3. Copy all files from this v1.2 package into the same folder that contains .venv.
+4. Existing dataset/train.csv, dataset/val.csv and dataset/test.csv can be reused.
+5. Existing v1.1 checkpoints are NOT recommended for automatic resume because v1.2 changes the optimizer/scheduler/loss and adds EMA. Start v1.2 training from epoch 1 for clean comparisons.
+6. Existing v1.1 images in clean can be reused without conversion; v1.2 creates LR images online during training.
+7. The default v1.2 configs use larger batch sizes tuned for a 12 GB-class GPU, but GameSR_Train.cmd runs an automatic batch benchmark first and passes the fastest usable batch size to train.py.
+8. To rebuild manifests after adding more clean screenshots, run:
+   GameSR_Train.cmd --model 1 --source "D:\path\to\clean"
+   This explicitly rebuilds dataset manifests.
+9. To use existing manifests without rebuilding them, just run:
+   GameSR_Train.cmd --model 1
+10. For all models:
+   GameSR_Train.cmd --model all
+11. To skip batch benchmarking:
+   GameSR_Train.cmd --model 1 --no-auto-batch

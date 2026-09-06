@@ -1,0 +1,5 @@
+amd-quark==0.12.post1
+onnxruntime==1.23.2
+onnx>=1.21.0,<=1.22.0
+numpy>=2.0
+Pillow>=10.0

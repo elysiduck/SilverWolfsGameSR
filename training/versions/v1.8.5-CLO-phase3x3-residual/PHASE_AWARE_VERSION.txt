@@ -1,0 +1,2 @@
+GameSR training phase-aware 3x3 residual v2.0
+Shared-environment packaging revision 1.8.5

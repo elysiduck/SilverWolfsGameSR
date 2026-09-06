@@ -1,0 +1,74 @@
+GameSR 训练代码 v1.7.1 —— 新手只看这里
+========================================
+
+这版有两个新模型：
+
+1. tiny-npu-fast：8 层卷积，优先追求接近 60 FPS。建议先训练它。
+2. tiny-npu-quality：14 层卷积，画质潜力更高；结构探针实测核心约 47.9 FPS。
+
+注意：47.9 FPS 是掌机上 14 层卷积“核心 ONNX”的实测结果，60 FPS 是
+8 层快版的设计目标；二者都不是 NPU 硬件理论上限。Magpie 最终帧率还会受
+截图、内存传输、着色器合成和显示影响。
+
+
+第一次使用
+----------
+
+1. 把本包所有文件复制到原 gamesr-local-training 文件夹，选择替换。
+2. 保留原来的 dataset、.venv 和 .venv-quark，不要删除。
+3. 双击 00_smoke_test.cmd。必须同时看到配置检查和训练步骤的 [PASS]。
+4. 如果从未成功安装 Quark，才需要双击 01_Install_RyzenAI_INT8.cmd。
+
+
+推荐训练：NPU Fast
+------------------
+
+1. 双击 Train-NPU-Fast.cmd。
+2. 第一次会测试合适的训练 batch。出现选择时直接按 Enter 使用最快值。
+3. 程序会自动训练、测试、导出 FP32、生成 AMD Quark XINT8 并打包。
+4. 训练中途关闭也没关系；再次双击会从 latest.pth 继续。
+5. 完成后使用：
+
+   deployment\tiny-npu-fast\tiny-npu-fast-720p-to-1080p-int8-qdq.onnx
+
+
+画质版
+------
+
+需要比较画质时，再双击 Train-NPU-Quality.cmd。它更慢、训练时间也更长。
+完成后使用：
+
+   deployment\tiny-npu-quality\tiny-npu-quality-720p-to-1080p-int8-qdq.onnx
+
+
+重要部署变化
+------------
+
+v1.7.1 的 ONNX 输出不是可直接显示的 1080p 图片，而是：
+
+   [1, 3, 720, 1280] 低分辨率 RGB 残差
+
+Magpie 必须在着色器中执行：
+
+   output = clamp(bilinear(input, 1.5) + bilinear(residual, 1.5), 0, 1)
+
+并使用 half-pixel / align_corners=false 坐标规则。
+
+这是为了把 Resize、基础图旁路、Add 和 Clip 移出 ONNX，让全部卷积保持为一个
+连续 NPU 子图。当前 Benchmark 可以测核心速度，但在 Magpie 完成这一着色器集成
+以前，不要把 core-only ONNX 当成完整超分模型直接显示。
+
+
+只重新导出/量化
+----------------
+
+已有 best.pth 时，不用重训：
+
+   快版：双击 Export-INT8-NPU-Fast.cmd
+   画质版：双击 Export-INT8-NPU-Quality.cmd
+
+如果生成过程成功，必须看到：
+
+   [PASS] QLinearConv: 0
+   [PASS] Core-only graph: Resize/Add/Clip = 0/0/0
+   [OK] Ryzen AI INT8 model

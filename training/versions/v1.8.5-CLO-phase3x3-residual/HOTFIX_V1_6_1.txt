@@ -1,0 +1,12 @@
+GameSR v1.6.1 installer hotfix
+================================
+
+Problem fixed:
+AMD Quark 0.12.post1+cpu.torch2.11 does not automatically install PyTorch.
+The v1.6 installer therefore reached verification and failed with:
+
+No module named 'torch'
+
+v1.6.1 explicitly installs the matching PyTorch 2.11 CPU wheel before Quark
+verification. Existing .venv-quark packages are preserved; rerunning the
+installer only downloads and adds the missing PyTorch package.

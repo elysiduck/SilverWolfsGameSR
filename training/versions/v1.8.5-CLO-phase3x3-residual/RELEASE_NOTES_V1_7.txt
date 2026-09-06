@@ -1,0 +1,12 @@
+GameSR Training Code v1.7
+========================
+
+- Added tiny-npu-fast: C8, 8 sequential Conv layers.
+- Added tiny-npu-quality: C8, 14 sequential Conv layers.
+- Training/validation still optimize the complete 720p-to-1080p image.
+- Ryzen AI ONNX now exports only the 720p RGB residual core.
+- Resize, base bypass, Add and Clip move to the future Magpie shader.
+- Export and INT8 validation reject those partition-breaking operators.
+- Deployment manifest schema v3 records the core-only shader contract.
+- Added beginner one-click training and re-export entry points.
+- Kept all v1.6.2 AMD Quark XINT8 safety checks and legacy configs.

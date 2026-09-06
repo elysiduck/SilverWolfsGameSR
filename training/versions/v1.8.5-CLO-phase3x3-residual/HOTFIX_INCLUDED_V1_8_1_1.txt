@@ -1,0 +1,1 @@
+This FIXED package includes gamesr/streaming.py from v1.7.6, including PersistentValidationLoader.

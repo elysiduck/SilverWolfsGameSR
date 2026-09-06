@@ -1,0 +1,15 @@
+你现在只需要这样做
+==================
+
+1. 关闭刚才报错的安装窗口。
+2. 把本修复包里的以下两个文件复制到原 gamesr-local-training 文件夹：
+
+   01_Install_RyzenAI_INT8.cmd
+   check_quark_env.py
+
+3. Windows 询问时选择“替换目标中的文件”。
+4. 再次双击 01_Install_RyzenAI_INT8.cmd。
+5. 不要删除 .venv-quark。安装器会保留已经安装好的内容，只补装 PyTorch 2.11 CPU。
+6. 看到 [PASS] 和 [OK] 后，再双击 Build-INT8.cmd。
+
+补装 PyTorch 的下载可能需要几分钟。

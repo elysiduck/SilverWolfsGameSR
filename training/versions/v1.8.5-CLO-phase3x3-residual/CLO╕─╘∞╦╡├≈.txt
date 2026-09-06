@@ -1,0 +1,21 @@
+使用方法
+========
+
+双击“一键训练-选择C-L-O.cmd”，依次输入：
+
+C：网络宽度，例如 16
+L：卷积层数，例如 4
+O：NPU 输出通道数，例如 3、4 或 6
+Epochs：训练轮数，直接回车默认为 100
+
+首次验证建议输入 C16、L4、O4。
+
+O3 保持原来的 RGB residual + GPU Bilinear 路径。
+O4/O6 使用 latent + learned 1x1 GPU decoder 路径。
+
+程序会自动建立独立名称，例如 gamesr-c16-l4-o4，因此不同 O 的模型、
+断点和导出文件不会混用。训练结束后仍会自动完成测试、ONNX 导出、
+INT8 转换和 deployment 打包。
+
+O4/O6 的 deployment 文件夹里会多出一个 onnx.decoder.json 文件，
+里面保存了以后写入 Magpie HLSL 所需的 learned decoder 权重。
