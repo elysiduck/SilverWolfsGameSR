@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [Parameter(Position=0)] [string]$DeploymentPath = '',
     [int]$Warmup = 5,
@@ -263,7 +263,22 @@ function Invoke-Perf([string]$ModelPath, [string]$Variant, [string]$Provider, [o
     if ($Provider -eq 'cpu') {
         $providerArguments += @('-e', 'cpu')
     } else {
-        $providerOptions = "config_file|$config enable_cache_file_io_in_mem|0 target|X1-Benchmark cache_dir|$cacheDir cache_key|gamesr_$($HashInfo.short)"
+        # onnxruntime_perf_test parses -i as whitespace-separated key|value tokens.
+        # Absolute paths are therefore unsafe when the benchmark root contains spaces
+        # (for example D:\Game SR\...).  Run from $root and pass relative, space-free
+        # provider-option paths instead.  The model path remains a separate argv item
+        # and may contain spaces safely.
+        $configForEp = 'runtime\vaip_config_stride.json'
+        $cacheDirForEp = Join-Path 'cache' $HashInfo.short
+        $providerOptions = "config_file|$configForEp enable_cache_file_io_in_mem|0 target|X1-Benchmark cache_dir|$cacheDirForEp cache_key|gamesr_$($HashInfo.short)"
+
+        # Defensive validation: every whitespace-delimited token passed to -i must
+        # contain exactly one non-empty key and value separated by '|'.
+        foreach ($token in @($providerOptions -split '\s+')) {
+            if ($token -notmatch '^[^|\s]+\|[^|\s]+$') {
+                Fail "Invalid VitisAI provider option token: $token"
+            }
+        }
         $providerArguments += @('-e', 'vitisai', '-i', $providerOptions)
     }
     # perf_test -c means parallel/concurrent runs, not warm-up count. GameSR is
@@ -276,11 +291,22 @@ function Invoke-Perf([string]$ModelPath, [string]$Variant, [string]$Provider, [o
 
     Write-Host ''
     Write-Host ("[RUN] {0} | {1} | hash={2} | cache_before={3}" -f $Variant, $Provider, $HashInfo.short, $cacheWasPresent) -ForegroundColor Cyan
+    if ($Provider -ne 'cpu') { Write-Host ("[EP OPTIONS] {0}" -f $providerOptions) -ForegroundColor DarkGray }
     Write-Host ("[WARMUP] separate process, serial runs={0}" -f $Warmup)
     $warmupTimer = [System.Diagnostics.Stopwatch]::StartNew()
-    $warmupOutput = @(& $perfExe @warmupArguments 2>&1)
-    $warmupExitCode = [int]$LASTEXITCODE
-    $warmupTimer.Stop()
+    $savedErrorAction = $ErrorActionPreference
+    try {
+        # Windows PowerShell 5.1 converts any native stderr line (including
+        # harmless ORT warnings) into a non-terminating NativeCommandError.
+        # Temporarily continue so stderr is captured without aborting the run;
+        # the real native exit code below remains authoritative.
+        $ErrorActionPreference = 'Continue'
+        $warmupOutput = @(& $perfExe @warmupArguments 2>&1)
+        $warmupExitCode = [int]$LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $savedErrorAction
+        $warmupTimer.Stop()
+    }
     $warmupLog = $prefix + '-warmup.log'
     $warmupOutput | Out-File -LiteralPath $warmupLog -Encoding utf8
     if ($warmupExitCode -ne 0) {
@@ -289,9 +315,14 @@ function Invoke-Perf([string]$ModelPath, [string]$Variant, [string]$Provider, [o
     }
     Write-Host ("[MEASURE] serial concurrency=1, runs={0}" -f $Runs)
     $timer = [System.Diagnostics.Stopwatch]::StartNew()
-    $nativeOutput = @(& $perfExe @arguments 2>&1)
-    $exitCode = [int]$LASTEXITCODE
-    $timer.Stop()
+    try {
+        $ErrorActionPreference = 'Continue'
+        $nativeOutput = @(& $perfExe @arguments 2>&1)
+        $exitCode = [int]$LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $savedErrorAction
+        $timer.Stop()
+    }
     $nativeOutput | Out-File -LiteralPath $logPath -Encoding utf8
     foreach ($line in $nativeOutput) { Write-Host ([string]$line) }
 
@@ -364,7 +395,7 @@ if ($OnlyInt8 -and @($selected | Where-Object { $_.variant -eq 'int8' }).Count -
 if ($selected.Count -eq 0) { Fail 'No model variants were selected.' }
 
 Write-Host ''
-Write-Host 'GameSR Ryzen AI NPU Benchmark v2.4' -ForegroundColor Cyan
+Write-Host 'GameSR Ryzen AI NPU Benchmark v2.4.1' -ForegroundColor Cyan
 Write-Host '==================================' -ForegroundColor Cyan
 Write-Host "Family  : $($modelSet.family)"
 Write-Host "Source  : $($modelSet.source)"
@@ -418,7 +449,7 @@ $jsonPath = $summaryBase + '-SUMMARY.json'
 $textPath = $summaryBase + '-SUMMARY.txt'
 $payload = [ordered]@{
     schema_version=4
-    benchmark='GameSR Ryzen AI NPU Benchmark v2.4'
+    benchmark='GameSR Ryzen AI NPU Benchmark v2.4.1'
     created=(Get-Date).ToString('o')
     family=$modelSet.family
     source=$modelSet.source
@@ -442,7 +473,7 @@ $payload = [ordered]@{
 $payload | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $jsonPath -Encoding UTF8
 
 $lines = @(
-    'GameSR Ryzen AI NPU Benchmark v2.4',
+    'GameSR Ryzen AI NPU Benchmark v2.4.1',
     '==================================',
     ('Finished: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')),
     ('Family: ' + $modelSet.family),

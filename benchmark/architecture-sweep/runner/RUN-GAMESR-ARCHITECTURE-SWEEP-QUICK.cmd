@@ -1,10 +1,10 @@
-@echo off
+﻿@echo off
 setlocal
 chcp 65001 >nul
 cd /d "%~dp0"
 
 echo ============================================================
-echo GameSR Architecture Sweep Runner v1.0 - QUICK pass
+echo GameSR Architecture Sweep Runner v1.0.2 - QUICK pass
 echo Warmup 5 / Runs 120 / NPU only
 echo ============================================================
 echo.

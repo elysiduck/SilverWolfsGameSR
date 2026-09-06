@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [Parameter(Position=0)] [string]$PayloadPath = '',
     [int]$Warmup = 20,
@@ -9,7 +9,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$runnerVersion = '1.0'
+$runnerVersion = '1.0.2'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $root
 
@@ -176,10 +176,24 @@ foreach ($resolved in $resolvedModels) {
     $before = @{}
     foreach ($f in @(Get-ChildItem -LiteralPath $resultsDir -Filter $pattern -File -ErrorAction SilentlyContinue)) { $before[$f.FullName] = $true }
 
-    $args = @('-NoProfile','-ExecutionPolicy','Bypass','-File',$benchmark,$resolved.model_dir,'-Warmup',"$Warmup",'-Runs',"$Runs",'-OnlyInt8','-SkipCpu')
+    $args = @('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-File',$benchmark,$resolved.model_dir,'-Warmup',"$Warmup",'-Runs',"$Runs",'-OnlyInt8','-SkipCpu')
     if ($ForceRecompile) { $args += '-ForceRecompile' }
-    & powershell.exe @args
-    $benchExit = [int]$LASTEXITCODE
+
+    # Capture the child benchmark output as an artifact. This makes infrastructure
+    # failures diagnosable and prevents native stderr warnings from aborting this
+    # outer runner under Windows PowerShell 5.1.
+    $launchLog = Join-Path $resultsDir ("SweepRunner-{0}-{1}-launch.log" -f $stamp, ($arch -replace '[^A-Za-z0-9._-]', '_'))
+    $savedOuterErrorAction = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $benchOutput = @(& powershell.exe @args 2>&1)
+        $benchExit = [int]$LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $savedOuterErrorAction
+    }
+    $benchOutput | Out-File -LiteralPath $launchLog -Encoding utf8
+    foreach ($line in $benchOutput) { Write-Host ([string]$line) }
+    [void]$sessionArtifacts.Add($launchLog)
 
     $newSummaries = @(
         Get-ChildItem -LiteralPath $resultsDir -Filter $pattern -File -ErrorAction SilentlyContinue |
@@ -194,8 +208,11 @@ foreach ($resolved in $resolvedModels) {
             parameters=[int64]$m.parameters; gmac_per_frame=[double]$m.gmac_per_frame; sha256=[string]$m.sha256
             status='NO_SUMMARY'; benchmark_exit=$benchExit; average_ms=$null; p50_ms=$null; p95_ms=$null; pure_fps=$null
             effective_gmac_s=$null; npu_event_share_percent=$null; npu_duration_share_percent=$null; npu_events=$null; cpu_events=$null
-            cache_present_before=$null; warmup_wall_seconds=$null; process_wall_seconds=$null; summary_json=''; log=''; profile=''
+            cache_present_before=$null; warmup_wall_seconds=$null; process_wall_seconds=$null; summary_json=''; log=$launchLog; profile=''
         }
+        Write-Host '[STOP] Benchmark infrastructure failed before producing SUMMARY.json. Stopping the sweep instead of repeating the same failure for every model.' -ForegroundColor Red
+        Write-Host ("[STOP] Diagnostic log: {0}" -f $launchLog) -ForegroundColor Yellow
+        break
     } else {
         $summaryFile = $newSummaries[0]
         try { $sum = Get-Content -Raw -LiteralPath $summaryFile.FullName | ConvertFrom-Json } catch { $sum = $null }
@@ -224,6 +241,23 @@ foreach ($resolved in $resolvedModels) {
             }
             $c = if ([string]$r.status -eq 'NPU_ONLY') { 'Green' } elseif ([string]$r.status -eq 'NPU_PARTIAL') { 'Yellow' } else { 'Red' }
             Write-Host ("[RESULT] {0}: status={1}, avg={2} ms, P95={3} ms, FPS={4}, eff={5} GMAC/s" -f $arch, $r.status, $r.average_ms, $r.p95_ms, $r.pure_fps, $eff) -ForegroundColor $c
+
+            # Stop immediately for a benchmark-infrastructure/parser failure.
+            # Unsupported individual architectures may still fail for other reasons,
+            # but malformed perf_test options would otherwise repeat for every model.
+            if ([string]$r.status -eq 'FAIL') {
+                $diagText = ''
+                foreach ($diagPath in @([string]$r.log, [string]$r.warmup_log, $launchLog)) {
+                    if (-not [string]::IsNullOrWhiteSpace($diagPath) -and (Test-Path -LiteralPath $diagPath -PathType Leaf)) {
+                        try { $diagText += "`n" + [System.IO.File]::ReadAllText($diagPath) } catch {}
+                    }
+                }
+                if ($diagText -match 'ParseSessionConfigs|run-time option|Use a .* to separate the key and value') {
+                    Write-Host '[STOP] perf_test provider-option parser failure detected. Stopping immediately.' -ForegroundColor Red
+                    Write-Host ("[STOP] Diagnostic log: {0}" -f $launchLog) -ForegroundColor Yellow
+                    break
+                }
+            }
         } else {
             $rows += [pscustomobject]@{
                 test_order=$order; architecture=$arch; channels=[int]$m.channels; conv_layers=[int]$m.conv_layers

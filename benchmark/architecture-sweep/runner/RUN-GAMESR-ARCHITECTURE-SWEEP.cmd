@@ -1,10 +1,10 @@
-@echo off
+﻿@echo off
 setlocal
 chcp 65001 >nul
 cd /d "%~dp0"
 
 echo ============================================================
-echo GameSR Architecture Sweep Runner v1.0 - Handheld / NPU only
+echo GameSR Architecture Sweep Runner v1.0.2 - Handheld / NPU only
 echo No Python / No PyTorch / No Quark required
 echo ============================================================
 echo.

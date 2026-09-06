@@ -1,4 +1,4 @@
-Copy ALL files from this folder into the SAME benchmark root on the handheld that successfully produced results-bm-5.
+﻿Copy ALL files from this folder into the SAME benchmark root on the handheld that successfully produced results-bm-5.
 
 That destination must already contain:
   runtime\bin\onnxruntime_perf_test.exe
