@@ -38,6 +38,7 @@ v1.8    Training Algorithm Upgrade（在线困难样本挖掘 + 损失课程 + �
   └ v1.8.1  Game-Aware / Detail-Aware Training
   └ v1.8.2  Late Polish / Information-Aware Training
 CLO v1.0  ⭐ C/L/O 三维选择器（在 v1.7.2 上加 O 维）
+CLO v1.0.1  批处理中文编码修复（去中文启动器，自带 v1.3 tools/int8_ptq.py）
 ```
 
 ### v1.4 / v1.4.1 / v1.4.2 — LR-residual 基线
@@ -100,6 +101,15 @@ CLO v1.0  ⭐ C/L/O 三维选择器（在 v1.7.2 上加 O 维）
 - **已验证**：O3 / O4 / O6 前向计算正确（`gamesr/model.py`、`pipeline.py`、`export_onnx.py` 的 `onnx.decoder.json`、`int8_ptq.py` / `build_deployment.py` 的 O 透传）。完整训练与 INT8 编译待真实数据集 + 较长时间执行。
 - 使用说明见 `training/CLO改造说明.txt` 与 `training/README_C_L_SELECTOR_CN.md`；帧率 / 结构探针背景见 `training/训练与帧率说明.md`。
 
+### CLO v1.0.1 — 批处理中文编码修复
+
+在 CLO v1.0 基础上修复**批处理中文编码问题**（见 `training/FIX-v1.0.1.txt`）：
+
+- **去中文启动器**：原中文名 `一键训练-选择C-L-O.cmd` 在部分系统下因 GBK/UTF-8 编码与 `%~dp0` 尾部反斜杠导致 `--root` 路径解析失败；v1.0.1 改为纯英文 `Train-Choose-C-L-O.cmd`，并以 `%CD%` 传参避免尾部反斜杠问题。仓库现仅保留英文启动器。
+- **自带 v1.3 `tools/int8_ptq.py`**：Builder 自包含，不再依赖外部 int8_ptq 路径。
+- 其余（O3/O4/O6 模式、一键 8 段流水线、`onnx.decoder.json`、C/L/O 命名隔离、部署契约 `magpie_bilinear_residual_v1` / `magpie_learned_1x1_decoder_v1`）与 CLO v1.0 完全一致，未改架构 / 契约。
+- 同步新增 3 份中文安装说明（`安装说明-V1.8.2.txt`、`覆盖安装说明-V1.7.7.txt`、`覆盖安装说明-V1.8.1.txt`）。
+
 ---
 
 ## 2. 相关工具家族（独立归档，未全部入仓）
@@ -114,7 +124,7 @@ CLO v1.0  ⭐ C/L/O 三维选择器（在 v1.7.2 上加 O 维）
 
 ## 3. `training/` 文件索引
 
-- **启动器**：`一键训练-选择C-L-O.cmd`、`Train-Choose-C-L.cmd`、`GameSR_Train.cmd`、`Train-NPU-Fast.cmd`、`Train-NPU-Quality.cmd`、`Build-INT8.cmd`、`Build-Deployment.cmd`、`Build-FP16.cmd`、`GameSR_Export.cmd`、`ONNX_Validate.cmd`、`00_smoke_test.cmd`、`01_Install_RyzenAI_INT8.cmd`
+- **启动器**：`Train-Choose-C-L-O.cmd`、`Train-Choose-C-L.cmd`、`GameSR_Train.cmd`、`Train-NPU-Fast.cmd`、`Train-NPU-Quality.cmd`、`Build-INT8.cmd`、`Build-Deployment.cmd`、`Build-FP16.cmd`、`GameSR_Export.cmd`、`ONNX_Validate.cmd`、`00_smoke_test.cmd`、`01_Install_RyzenAI_INT8.cmd`
 - **核心代码**：`pipeline.py`（8 段流水线 + C/L/O 选择器）、`train.py`、`evaluate.py`、`export_onnx.py`、`int8_ptq.py`、`build_deployment.py`、`fp16_convert.py`、`prepare_dataset.py`、`validate_onnx.py`、`tools/int8_ptq.py`、`gamesr/{model,data,streaming,metrics,utils}.py`
 - **配置**：`configs/*.yaml`（c8 / c12 / c16 / c32-l3 / npu-fast / npu-quality 预设，C/L/O 自定义生成 `gamesr-c{C}-l{L}-o{O}.yaml`）、`config/potential_backbones.json`
 - **版本 / 使用说明**：`README_V1_*.md`、`RELEASE_NOTES_V1_*.txt`、`README_C_L_SELECTOR_CN.md`、`CLO改造说明.txt`、`训练与帧率说明.md`、`DEPLOYMENT_WORKFLOW.md`、`README_OUTPUT_CHANNEL_PROBE_CN.txt`、`README_PC_CN.txt`

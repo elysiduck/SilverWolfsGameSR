@@ -74,7 +74,7 @@
 
 - [`VERSIONS.md`](VERSIONS.md)
 
-逐版本作用与说明的总索引：训练代码主线 v1.4 → v1.8.2 与 **CLO v1.0**（C/L/O 选择器），以及架构扫描构建器、NPU 架构扫描 / 输出通道探针、数据集工具等独立工具家族的角色与相互关系；并附 `training/` 文件索引。
+逐版本作用与说明的总索引：训练代码主线 v1.4 → v1.8.2 与 **CLO v1.0.1**（C/L/O 选择器，v1.0.1 修复批处理中文编码），以及架构扫描构建器、NPU 架构扫描 / 输出通道探针、数据集工具等独立工具家族的角色与相互关系；并附 `training/` 文件索引。
 
 ### 8. 上游参考
 
@@ -101,7 +101,8 @@ Magpie 通用说明与第三方许可证属于上游资料，不和 GameSR 自�
 - `GameSR-training-code-v1.7.1-fixed.zip`
 - `GameSR-training-code-v1.7.zip`
 - `GameSR-local-training-env-v1.1.zip`
-- `gamesr-local-training-CLO-v1.0.zip`（当前训练主线：C/L/O 三维选择器）
+- `gamesr-local-training-CLO-v1.0.zip`（训练主线 C/L/O 三维选择器）
+- `gamesr-local-training-CLO-v1.0.1.zip`（v1.0.1：批处理中文编码修复，去中文启动器，自带 v1.3 tools/int8_ptq.py）
 - `Magpie-SESR-M7-NPU-Exact1080p-source-v2.1.zip`
 - `GameSR-Magpie-SESR-v2.1-Pipeline-v3-fixed3.zip`
 - `GameSR-Magpie-SESR-v2.1-ProfilerPatch-v2.zip`

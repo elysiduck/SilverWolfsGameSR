@@ -32,6 +32,7 @@ outputs/
 
 # Images
 *.webp
+*.png
 
 # Misc generated
 quantized_info.csv
