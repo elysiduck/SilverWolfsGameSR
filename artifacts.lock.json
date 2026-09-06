@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "updated": "2026-09-06",
+  "artifacts": [
+    { "id": "training-v1.8.2-patch", "file": "GameSR-training-code-v1.8.2-Late-Polish-Information-Aware-Patch.zip", "sha256": "076C3D90A4BFA6BFE426BFBA293D4A8E9A4B67E865017DB15D049E52CB7558E6", "release_tag": "training-v1.8.2", "purpose": "Training patch source" },
+    { "id": "collector-v3.2", "file": "GameSR_Dataset_Collector_V3_2.zip", "sha256": "8B491D3ED166E065D4FA4D9EC489B9FA8D71084C5FE35F72C284B14F31B834F6", "release_tag": "dataset-tools-v3.2.1", "purpose": "Collector source" },
+    { "id": "cleaner-v3.2.1", "file": "GameSR-Cleaner-V3.2.1-StorageStats-Patch.zip", "sha256": "51EC185E2013A59DF6973EA98CA42C2E25314129F18266A31F0953C2B21FB1E0", "release_tag": "dataset-tools-v3.2.1", "purpose": "Cleaner storage-statistics patch" },
+    { "id": "benchmark-v1.3", "file": "GameSR-XDNA-Architecture-Benchmark-v1.3.zip", "sha256": "43E9816F95E06219465D5D6D77A450BE63E7B118807C3354FE89C04B11175DFC", "release_tag": "benchmark-v1.3", "purpose": "XDNA benchmark bundle; contains vendor runtime" },
+    { "id": "sweep-models-20260905", "file": "GameSR-NPU-Architecture-Sweep-Models-105-20260905-010613.zip", "sha256": "93E738C7F68C68BE89226C0A73BFA2A73D2195E72140BE0C3006F57ABB40C061", "release_tag": "benchmark-sweep-20260905", "purpose": "105 prebuilt XINT8 models" },
+    { "id": "sweep-results-20260905", "file": "GameSR-NPU-Architecture-Sweep-20260905-161928-COMPACT.zip", "sha256": "85D55B3807382E9D926DC4D9AC6D283F97FD8F96BF226F98B4C5A56DD2EFAB24", "release_tag": "benchmark-sweep-20260905", "purpose": "Compact aggregate benchmark result" },
+    { "id": "magpie-v4.1.1", "file": "Magpie-SESR-GameSR-v4.1.1-AsyncNPU-CurrentInput-full-source.zip", "sha256": "E45EEC28C582629C3DF8BB9A1564A43CA620F73921C194B356D7E1195A4B0BB2", "release_tag": "magpie-v4.1.1", "purpose": "Full Magpie source bundle" }
+  ]
+}

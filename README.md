@@ -30,6 +30,10 @@ SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是�
 
 模型、checkpoint、厂商运行时和大型 benchmark 输出不进入 Git，见 [`ARTIFACTS.md`](ARTIFACTS.md)。
 
+## 构建
+
+统一构建入口和外部制品目录约定见 [`scripts/README.md`](scripts/README.md)。所有外部包均由 [`artifacts.lock.json`](artifacts.lock.json) 的 SHA256 锁定。
+
 ## 文档中心
 
 GameSR 的历史迁移资料、数据采集/Cleaner、训练、Magpie/NPU 部署、Pipeline/Profiler 和上游参考资料已分类整理到 [`docs/README.md`](docs/README.md)。
