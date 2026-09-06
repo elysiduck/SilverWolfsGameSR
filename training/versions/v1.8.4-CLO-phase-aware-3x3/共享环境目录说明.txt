@@ -1,0 +1,28 @@
+推荐目录结构：
+
+GameSR-local-training-env-v1.1\
+  .venv\                 共享 CUDA 训练环境
+  .venv-quark\           共享 AMD Quark / INT8 环境
+  .tools\                共享 uv 工具
+  gamesr-training-v1.8\  一套代码
+  gamesr-training-v1.9\  另一套代码
+
+使用方法：
+
+1. 将本代码文件夹放在共享环境目录的下一级或更深层级。
+2. 双击 Train-Choose-C-L-O.cmd。
+3. 程序会先找代码目录内的 .venv；找不到时逐级向父目录查找。
+4. 一键流程导出 INT8 时，也会逐级查找 .venv-quark。
+
+首次安装：
+
+- 在本代码目录运行 setup.ps1，默认把 .venv 和 .tools 创建在上一级目录。
+- 再双击 01_Install_RyzenAI_INT8.cmd，默认把 .venv-quark 创建在上一级目录。
+
+可选覆盖：
+
+- GAMESR_TRAIN_PYTHON：指定训练 python.exe 的完整路径。
+- GAMESR_QUARK_PYTHON：指定 Quark python.exe 的完整路径。
+- setup.ps1 -EnvironmentRoot "D:\GameSR-Shared"：指定共享环境目录。
+
+每套代码自己的 configs、outputs、models、deployment 和日志仍保存在各自文件夹，互不混用。

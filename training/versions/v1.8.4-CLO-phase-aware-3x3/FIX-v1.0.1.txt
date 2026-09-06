@@ -1,0 +1,2 @@
+Fix: do not pass quoted %~dp0 (trailing backslash) as --root; use %CD%.
+Fix: bundle v1.3 tools/int8_ptq.py so Builder is self-contained.

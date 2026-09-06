@@ -1,0 +1,14 @@
+GameSR v1.8.1 Game-Aware Training Patch
+
+- Detail-aware hard mining: rank by reconstruction error * HR target detail value.
+- Hard selected-sample gradient multiplier capped at 1.50x.
+- High-frequency loss now uses an HR target-detail spatial mask.
+- HF max weight reduced 0.06 -> 0.03.
+- Edge max reduced to ~0.0725; SSIM max ~0.030.
+- Hard fraction 0.10 -> 0.25; requested mix 0.06 -> 0.20.
+- Game-oriented degradation: much less synthetic noise/quantization/color perturbation.
+- Weighted resize sampling: Bicubic 50%, Bilinear 40%, Area 10%.
+- Existing stock v1.8 YAML settings are migrated in memory when safe; user custom values are preserved when detected.
+- New training diagnostics: average detail score and effective hard mix.
+- No deployed model architecture / ONNX / NPU inference changes.
+- Same C/L/scale checkpoints remain Auto-Resume compatible.

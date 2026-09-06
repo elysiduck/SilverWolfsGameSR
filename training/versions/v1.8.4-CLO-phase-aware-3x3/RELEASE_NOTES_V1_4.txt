@@ -1,0 +1,18 @@
+GameSR Training Code v1.4 release notes
+
+Primary fixes and upgrades:
+- Benchmark_Training.cmd works with no arguments and enters the same data-preparation + benchmark flow as the main pipeline.
+- Missing dataset manifests trigger automatic clean-folder prompt and prepare_dataset.py.
+- A benchmark that contains only errors/OOM/no measurements is rejected and never cached as valid.
+- Cached benchmarks use schema/signature validation over dataset manifests, model architecture, degradation, loss settings, benchmark settings, and runtime-relevant config.
+- GameSR_Train.cmd uses a valid cache when possible, prints all tested batch sizes, and Enter selects the fastest valid batch.
+- Per-model benchmark files remain separate for Tiny-C8, Balanced-C12, and Quality-C16.
+- v1.4 default model architecture is LR-residual: feature extraction at LR resolution, 3-channel residual upsample, then bilinear global residual add.
+- Benchmark uses the real training loss path: L1 + edge + periodic SSIM plus gradient clipping.
+- GPU-side game degradation is retained; CPU JPEG encode/decode is not used by default.
+- Training logs expose batch size, throughput, loader wait, H2D/degradation time, compute time, peak VRAM, and benchmark provenance.
+- Automatic resume refuses a checkpoint created by a different training code version/config unless explicitly overridden.
+
+Recommended formal experiment policy:
+- Start fresh at epoch 1 for v1.4.
+- Run the benchmark once per model/GPU; use Enter for fastest throughput unless there is a deliberate reason to select another tested batch.

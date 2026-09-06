@@ -1,0 +1,11 @@
+GameSR Training Code v1.4 upgrade notes
+
+1. Training degradation moved from CPU/PIL into the GPU training loop.
+2. Benchmark now exercises the v1.4 GPU-side degradation path and saves persistent JSON results.
+3. GameSR_Train.cmd reads saved benchmark files, shows every measured batch, asks for a batch, and uses the fastest batch on Enter.
+4. Benchmark files are separated by GPU name and model config.
+5. Training metrics include loader wait, H2D+degradation, compute stage, images/s, peak VRAM and selected batch.
+6. JPEG CPU roundtrip is disabled by default; quantization provides a lightweight compression-like perturbation.
+7. Horizontal flipping remains disabled for full game screenshots.
+8. SSIM is computed less often by default to reduce overhead on tiny models.
+9. Existing v1.2 checkpoints are not recommended for formal v1.4 runs; start a fresh v1.4 run.

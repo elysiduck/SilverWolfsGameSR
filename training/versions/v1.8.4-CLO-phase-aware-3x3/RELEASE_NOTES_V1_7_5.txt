@@ -1,0 +1,18 @@
+GameSR training v1.7.5
+=====================
+
+Persistent RAM Cache + automatic available-memory sizing.
+
+Changes:
+- compressed source bytes can persist in RAM across training epochs;
+- automatic Windows physical-memory detection with no psutil dependency;
+- safe auto cache budget (reserve/headroom/cap policy);
+- protected + rolling-LRU two-tier cache for datasets larger than RAM;
+- emergency cache eviction under system memory pressure;
+- SMB/decode thread pools persist across epochs;
+- next-epoch raw prewarm overlaps validation/checkpoint work;
+- new cache/network/RAM diagnostics;
+- validation and checkpoint timing are printed to diagnose epoch gaps;
+- CSV logging can safely grow new metric columns across trainer upgrades;
+- no NVMe dataset copy is created;
+- existing v1.7.4 checkpoints/configs remain compatible.

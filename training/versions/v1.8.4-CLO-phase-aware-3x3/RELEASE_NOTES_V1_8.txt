@@ -1,0 +1,39 @@
+GameSR v1.8 Training Algorithm Upgrade
+======================================
+
+Core changes
+------------
+1. GPU online hard-example mining:
+   - ranks current batch patches by per-image L1 error
+   - hardest fraction ramps 15% -> 40%
+   - hard-loss mix ramps 10% -> 35%
+   - no additional CPU image candidate scanning
+
+2. Loss curriculum:
+   - Foundation 0-6%
+   - Detail 6-30%
+   - Refine 30-100%
+   - Edge: 0.05 -> 0.09
+   - SSIM: 0.02 -> 0.035
+   - Lightweight high-frequency: 0 -> 0.06
+
+3. Lightweight high-frequency reconstruction loss:
+   - luminance high-pass residual
+   - no FFT/VGG/LPIPS dependency
+   - every 2 steps by default
+   - train only; deployment graph unchanged
+
+4. Degradation curriculum:
+   - starts at 90% effective difficulty
+   - reaches 100% by 25% training progress
+
+5. Includes v1.7.7 quality diagnostics:
+   - baseline/delta PSNR, lower-tail metrics, edge metrics, trend, quality_summary.json
+
+Compatibility
+-------------
+- Built on v1.7.6 training/cache stack.
+- Model architecture is unchanged.
+- Generated config trainer_version is 1.8.0.
+- Compatibility config version intentionally remains 1.7.4 so SAME C/L/scale
+  v1.7.x checkpoints can auto-resume.

@@ -1,0 +1,12 @@
+GameSR training code v1.8.2 - Late Polish / Information-Aware Training
+
+- Resume-safe overlay for v1.8.1 checkpoints. Model architecture/signature unchanged.
+- Adds late-polish phase beginning around 50% training progress and reaching full strength near 75%.
+- HF loss gradually reduces toward 0.012; hard fraction/mix reduce toward 15% / 9%.
+- Edge remains bidirectional and only gently relaxes toward 0.0675; SSIM remains ~0.030.
+- Adds information-aware base L1 during polish: low-information patches get slightly less weight,
+  target-detail patches slightly more, with mean-normalized weights.
+- Adds conservative black/flat patch suppression. Black panels containing text are protected by
+  target variance/detail gating and are not treated like empty cinematic bars.
+- Adds Detail PSNR, Detail Delta-PSNR, Smooth PSNR, Detail Edge Error, oversharp and undersharp diagnostics.
+- Includes the v1.7.5.2 robust training_log.csv schema migration and v1.7.6 PersistentValidationLoader.

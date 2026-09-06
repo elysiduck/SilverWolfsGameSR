@@ -1,0 +1,7 @@
+# FP16/general deployment helpers used by the CUDA training environment.
+# Ryzen AI INT8 uses the separate quark_requirements.txt environment.
+numpy
+Pillow
+onnx
+onnxruntime
+onnxconverter-common

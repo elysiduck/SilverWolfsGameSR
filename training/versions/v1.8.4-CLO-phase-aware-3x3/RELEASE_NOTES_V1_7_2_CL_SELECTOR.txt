@@ -1,0 +1,8 @@
+GameSR v1.7.2 C/L Selector patch
+- Added interactive custom NPU architecture training (Channels C + Conv Layers L).
+- Added Train-Choose-C-L.cmd.
+- Added CLI --channels/--layers/--epochs/--name.
+- Generated profiles are reproducible YAML files under configs/.
+- Custom profiles use isolated outputs/checkpoints/ONNX/INT8/deployment names.
+- build_deployment.py now accepts custom profiles/config paths.
+- Existing v1.7.1 presets remain backward compatible.

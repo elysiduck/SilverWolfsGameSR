@@ -1,0 +1,11 @@
+GameSR Training Code v1.6
+========================
+
+- Replaced generic ONNX Runtime PTQ with AMD Quark XINT8.
+- Added isolated .venv-quark installation; CUDA training .venv is untouched.
+- Added Ryzen AI graph gate that rejects QLinearConv and asymmetric zero points.
+- Added deterministic calibration progress and robust CSV-relative paths.
+- Added atomic model publication and self-contained ONNX output.
+- Added SHA-256/graph metadata for every accepted INT8 model.
+- Deployment now excludes stale or unvalidated INT8 files.
+- Existing FP32 ONNX/checkpoints remain usable; retraining is not required.

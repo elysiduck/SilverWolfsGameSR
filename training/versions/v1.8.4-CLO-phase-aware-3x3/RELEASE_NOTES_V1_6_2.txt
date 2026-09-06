@@ -1,0 +1,8 @@
+GameSR Training Code v1.6.2
+==========================
+
+- Fixed a false rejection after successful AMD Quark XINT8 calibration.
+- Quark can store symmetric signed activations as UINT8 with centre value 128.
+- Validation now checks zero-point values according to their storage dtype.
+- Signed INT8/INT16/INT32 zero points must remain 0.
+- UINT8 activation zero points may be 128, or 0 after Relu/Clip constraints.

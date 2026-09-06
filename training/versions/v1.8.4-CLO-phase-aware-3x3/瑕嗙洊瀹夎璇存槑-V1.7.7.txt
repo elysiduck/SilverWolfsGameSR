@@ -1,0 +1,10 @@
+GameSR v1.7.7 覆盖式补丁
+========================
+
+1. 先停止正在运行的训练 Python 进程。
+2. 本补丁基于 v1.7.6；把本目录内容覆盖到 gamesr-local-training 根目录。
+3. 只需要覆盖 train.py，并新增 gamesr\metrics.py。
+4. 不要删除 dataset、outputs、.venv、.venv-quark、latest.pth、best.pth。
+5. 仍然双击 Train-Choose-C-L.cmd，已有 checkpoint 可直接续训。
+
+本补丁不修改模型、Loss、优化器、Scheduler、Degradation 或部署结构。

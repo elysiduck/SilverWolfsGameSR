@@ -1,0 +1,48 @@
+version: 1.7.1
+project: tiny-npu-quality
+seed: 42
+scale: 1.5
+model: {channels: 8, architecture: npu_sequential, conv_layers: 14}
+deployment:
+  core_only: true
+  postprocess: magpie_bilinear_residual_v1
+data:
+  root: dataset
+  hr_patch: 192
+  batch_size: 16
+  workers: 6
+  prefetch_factor: 4
+  pin_memory: true
+  drop_last: true
+  augment: true
+  val_resize_kernel: lanczos
+  degradation:
+    resize_kernels: [bicubic, bilinear, area]
+    blur_probability: 0.12
+    sharpen_probability: 0.18
+    post_sharpen_probability: 0.18
+    jpeg_probability: 0.00
+    noise_probability: 0.18
+    quantization_probability: 0.08
+    brightness_probability: 0.10
+    contrast_probability: 0.15
+    jpeg_quality: [80, 96]
+    noise_std: [0.20, 1.00]
+train:
+  epochs: 120
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  warmup_epochs: 5
+  amp: true
+  channels_last: true
+  ema: true
+  ema_decay: 0.995
+  l1_weight: 1.0
+  edge_loss_weight: 0.05
+  ssim_loss_weight: 0.02
+  ssim_every_n_steps: 4
+  grad_clip: 1.0
+  save_every: 10
+  preview_every: 2
+  val_batches: 0
+output: outputs/tiny-npu-quality

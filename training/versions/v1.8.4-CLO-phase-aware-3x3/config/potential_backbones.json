@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "source_sweep": "GameSR-NPU-Architecture-Sweep-20260906-035606-COMPACT",
+  "selection_policy": "Keep four capacity tiers that survived the C/L sweep; drop obviously inefficient channel widths and same-tier backbones dominated by a wider sweet-spot neighbour.",
+  "outputs": [3, 4, 6, 8],
+  "backbones": [
+    {
+      "order": 1,
+      "name": "C8-L5",
+      "channels": 8,
+      "conv_layers": 5,
+      "source_parameters_o3": 2195,
+      "source_gmac_o3": 1.990656,
+      "source_average_ms": 11.0735,
+      "tier": "tiny"
+    },
+    {
+      "order": 2,
+      "name": "C16-L4",
+      "channels": 16,
+      "conv_layers": 4,
+      "source_parameters_o3": 5523,
+      "source_gmac_o3": 5.042995,
+      "source_average_ms": 10.5284,
+      "tier": "balanced"
+    },
+    {
+      "order": 3,
+      "name": "C24-L3",
+      "channels": 24,
+      "conv_layers": 3,
+      "source_parameters_o3": 6531,
+      "source_gmac_o3": 5.971968,
+      "source_average_ms": 10.4399,
+      "tier": "wide-shallow"
+    },
+    {
+      "order": 4,
+      "name": "C32-L3",
+      "channels": 32,
+      "conv_layers": 3,
+      "source_parameters_o3": 11011,
+      "source_gmac_o3": 10.08599,
+      "source_average_ms": 11.1148,
+      "tier": "high-capacity"
+    }
+  ],
+  "examples_of_excluded_dominated_pairs": [
+    "C24-L3 over C22-L3: 10.4399 ms vs 10.4446 ms while carrying more capacity",
+    "C16-L4 over C14-L4: 10.5284 ms vs 10.5514 ms while carrying more capacity",
+    "C32-L3 over C30-L3: 11.1148 ms vs 11.1313 ms while carrying more capacity"
+  ]
+}

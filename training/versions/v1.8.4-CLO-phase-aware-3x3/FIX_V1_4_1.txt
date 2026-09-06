@@ -1,0 +1,6 @@
+GameSR Training Code v1.4.1
+
+Hotfix: pipeline benchmark cache validation now accepts schema_version=5, matching benchmark_speed.py.
+This fixes the false "Benchmark produced no valid result" failure after a successful benchmark.
+No training model/data format changes.
+Existing valid v1.4 benchmark JSON caches with schema_version=5 can be reused.

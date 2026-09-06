@@ -1,0 +1,9 @@
+GameSR Training Code v1.5.1
+
+Hotfix:
+- Fix static INT8/QDQ PTQ failures on ONNX models stored with external data.
+- Explicitly run ONNX shape inference in Python, flatten a temporary inferred model,
+  then quantize that self-contained graph to avoid ORT *-inferred.onnx lookup failures.
+- Validate the generated INT8 ONNX with onnx.checker before reporting success.
+- Delete the temporary inferred model after successful validation.
+- Existing FP32/FP16/checkpoints/dataset formats remain unchanged.
