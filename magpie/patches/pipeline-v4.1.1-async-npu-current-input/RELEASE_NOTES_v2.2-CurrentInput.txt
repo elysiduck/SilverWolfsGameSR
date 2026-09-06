@@ -1,0 +1,24 @@
+Magpie SESR-M7 NPU v2.2 Current Input
+======================================
+
+New
+---
+- Added "SESR-M7 NPU 当前分辨率输入" / "SESR-M7 NPU Current Input".
+- This mode bypasses the Exact-1080p Bicubic pre-resize and feeds the captured
+  texture to the NPU at its native captured dimensions.
+- Added explicit log lines showing the real NPU input and fixed-x2 output size.
+- Existing user configurations receive the new scaling mode automatically.
+
+Preserved
+---------
+- "SESR-M7 NPU Exact 1080p" remains available for direct A/B testing.
+- Pipeline v3 fixed3 is included for legacy tiled SESR.
+- Pipeline v4.1 Async NPU is included for GameSR residual models: a dedicated
+  worker moves NCHW packing, VitisAI Run, and residual output packing off the
+  render thread, with three-slot latest-frame-wins scheduling.
+
+Important
+---------
+- Legacy SESR-M7 remains fixed x2. However, selected GameSR models now use the
+  native 720p residual + GPU 1.5x composition path and do not get pre-scaled to
+  540p by Exact 1080p mode.

@@ -1,6 +1,6 @@
 # SilverWolfsGameSR
 
-SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是在 AMD Ryzen AI / XDNA NPU 上运行轻量级神经网络超分模型，并与 Magpie 集成，实现 720p → 1080p 的实时 AI 超分。
+SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是在 AMD Ryzen AI / XDNA NPU 上运行轻量级神经网络超分模型，并与 Magpie 集成。
 
 ## 项目结构
 
@@ -9,20 +9,22 @@ SilverWolfsGameSR 是一个面向游戏实时超分的实验项目，目标是�
 - `benchmark/`：NPU / GPU / 端到端性能测试
 - `dataset-tools/`：采集、清洗、数据集处理工具
 - `models/`：模型说明与发布索引
-- `docs/`：架构、性能、实验记录
+- `docs/`：架构、性能、实验记录和项目记忆
 
 ## 当前重点
 
-- C16L4 GameSR 720p → 1080p residual SR
+- GameSR full-frame residual SR
 - ONNX Runtime + VitisAIExecutionProvider
 - QDQ INT8 NPU 推理
-- Magpie Pipeline v4：异步 NPU worker / latest-frame-wins / 多槽流水线
+- Magpie Pipeline v4.1：异步 NPU worker / latest-frame-wins / 三槽流水线
+- Current Input：NPU 直接接收当前捕获分辨率，不再强制把 1280×720 预缩放为 960×540
+- 当前补丁：`magpie/patches/pipeline-v4.1.1-async-npu-current-input/`
 
 ## 文档中心
 
 GameSR 的历史迁移资料、数据采集/Cleaner、训练、Magpie/NPU 部署、Pipeline/Profiler 和上游参考资料已分类整理到 [`docs/README.md`](docs/README.md)。
 
-当前项目状态以本 README、`CHANGELOG.md` 和当前源码为准；`docs/archive/` 中的 v1.7、C8、Pipeline v3 等资料用于历史追溯，不代表当前主线。
+当前项目状态以本 README、`CHANGELOG.md`、`docs/PROJECT_MEMORY.md` 和当前补丁源码为准；`docs/archive/` 中的 v1.7、C8、Pipeline v3 等资料用于历史追溯，不代表当前主线。
 
 ## 版本规则
 
@@ -31,4 +33,4 @@ GameSR 的历史迁移资料、数据采集/Cleaner、训练、Magpie/NPU 部署
 - Benchmark: `benchmark-vX.Y`
 - Model: `model-c16l4-rX` / `model-c32l3-rX`
 
-大型训练数据集和全量 checkpoint 不直接提交到 Git 历史；正式 ONNX / 关键 checkpoint 优先通过 Release 或专门模型存储发布。
+大型训练数据集、完整 Magpie 上游依赖树和全量 checkpoint 不直接提交到 Git 历史；正式 ONNX / 关键 checkpoint 优先通过 Release 或专门模型存储发布。
