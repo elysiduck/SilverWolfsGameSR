@@ -173,6 +173,27 @@ v1.8.4  Phase-Aware 3×3 decoder（direct_rgb + 20% bilinear skip，schema v2）
 
 ---
 
+### Magpie GameSR v4.4 — Phase3x3 GPU 向量化（叠加 v4.3）
+
+- **包**：
+  - 源码 `Magpie-GameSR-v4.4-Phase3x3-Vectorized-full-source.zip`（`magpie/patches/v4.4-phase3x3-vectorized/`，9 文件，与 v4.3 同构的 GameSR 修改集，其中 3 个文件在 v4.4 更新）。SHA256 `29D4D09A0547FF75E43271A35AE583711D2541C5944E2CA7C25F2F9BCC37936B`。
+  - 运行包 `Magpie-GameSR-v4.4-Phase3x3-Vectorized-runtime.zip`（296 MB，GitHub Release `magpie-v4.4` 资产，不入 git）。SHA256 `4BB0E16CA0CE228CAA672A16B82F9D08AFB8D9B2C472D356486969A6117582AC`。
+- 基于 **v4.3**，**完整保留** SIMD-v4.2.6、异步三槽、模型子文件夹、**不修改 ONNX / 不重新训练 / 不重新量化**（运行包 `int8-qdq.onnx.meta.json` 明确 `source_model=...v1.8.5-CLO-phase3x3-residual...`，由 AMD Quark INT8 从训练 v1.8.5 导出）。
+- **GPU 向量化（核心改动）**：启动时把 schema v3 权重**重排为 GPU `float4` 通道组**，`StructuredBuffer<float4>` 替代 `StructuredBuffer<float>`；一个 latent `float4` 邻域读取同时用于 R/G/B 三路输出，不再按 RGB / 单通道重复 Load。
+  - O4 每个 1080p 输出像素：latent 纹理读取由 **108 次标量 Load → 9 次 `float4` Load**；权重读取由 **108 次标量 → 27 次 `float4`**（利用 GPU 参数缓存）。
+  - O6 / O8 自动用**两个 `float4` latent 平面**（`gameSrLatentTextureCount=(OC+3)/4`：O4→1、O6/O8→2）；缺失通道补零。
+  - bias 在权重块后追加为 9 个 `float4`（每相位 1 个，`.xyz` 取 3 bias，`.w=0`）。
+  - 权重重排索引 `((phase*3+rgb)*OC+channel)*9+ky*3+kx` 与 HLSL `tapBase=((27*phase+3*ky+kx)*TC+t)+rgb*9*TC` 严格对应，单测着色器 `tools/GameSRPhaseDecoderTest.hlsl` 同步更新。
+- **向后兼容完全保留**：`SesrNpuProcessor.cpp` 默认 `Legacy1x1`；O3 旧 `bilinear + identity residual` 路径、旧 O4/O6/O8 `bilinear_then_1x1`（12 权重 + 3 bias，schema v1）均可识别。运行包实测含 `gamesr-c24-l3-o4`（schema v1 `bilinear_then_1x1`）+ `gamesr-c16-l4-o4-phase3x3r-v3`（schema v3 `phase_aware_3x3_v1`，与 v4.3 / 训练 v1.8.5 逐维对齐）。
+- **与 v4.3 的文件级差异**（v4.4 仅改 3 文件 + 更新说明，其余 5 文件与 v4.3 完全相同）：
+  - `src/Magpie.Core/SesrNpuProcessor.cpp`：新增 float4 重排 + 嵌入 HLSL 改 `StructuredBuffer<float4>`、单趟 `PhaseResidual` 输出 RGB 三路（`dot` 累加）。
+  - `src/Magpie.Core/Renderer.cpp`：仅 `_InitBackend` 日志 Build ID 串改为 `magpie-v4.4-phase3x3-vectorized | float4-decoder`。
+  - `tools/GameSRPhaseDecoderTest.hlsl`：镜像上述着色器改动。
+  - `BUILD_ID.txt` / `RELEASE_NOTES_v4.4_*` 更新；`ScalingModeItem.cpp` / `ScalingModesPage.xaml` / `GameSR-Models/README_CN.txt` 不变。
+- 梳理与检查见 `magpie/REVIEW-v4.4-phase3x3-vectorized.md`：源码逐项核对属实、索引自洽、契约与训练 v1.8.5 schema v3 对齐（meta.json 实证）；Release x64 编译 / HLSL `cs_5_0` 编译 / 设备端 NPU 720p→1080p 实际加速与逐像素一致性待用户解压后最终验证。
+
+---
+
 ## 2. 相关工具家族（独立归档，未全部入仓）
 
 - **架构扫描构建器** `GameSR-Architecture-Sweep-Builder` / `GameSR-Architecture-Sweep-Runner`（v1.0 / v1.0.1 / v1.0.2）：在目标掌机批量跑 NPU 架构组合（C / L / 层数）的延迟探针，产出候选延迟预算表，供“宽度 vs 深度”取舍。

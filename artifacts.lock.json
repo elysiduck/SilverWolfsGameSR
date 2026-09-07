@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-09-06",
+  "updated": "2026-09-07",
   "artifacts": [
     { "id": "training-v1.8.2-patch", "file": "GameSR-training-code-v1.8.2-Late-Polish-Information-Aware-Patch.zip", "sha256": "076C3D90A4BFA6BFE426BFBA293D4A8E9A4B67E865017DB15D049E52CB7558E6", "release_tag": "training-v1.8.2", "purpose": "Training patch source" },
     { "id": "collector-v3.2", "file": "GameSR_Dataset_Collector_V3_2.zip", "sha256": "8B491D3ED166E065D4FA4D9EC489B9FA8D71084C5FE35F72C284B14F31B834F6", "release_tag": "dataset-tools-v3.2.1", "purpose": "Collector source" },
@@ -22,6 +22,8 @@
     { "id": "training-v1.8.6-stable-phaseresidual-patch", "file": "GameSR-v1.8.6-Stable-PhaseResidual-Training-Patch.zip", "sha256": "074015E7AA3C5353D002BA8964AD04FFC61E455D70981A4B827585B255F61D7C", "release_tag": "training-v1.8.6", "purpose": "Training v1.8.6 stable phase-residual patch (incremental over v1.8.5)" },
     { "id": "training-v1.8.7-dataset-manager-stable-patch", "file": "GameSR-v1.8.7-Dataset-Manager-Stable-Training-Full-Patch.zip", "sha256": "2D0FE4ABDC0437A1743644C6AF547B076A3ACA2158EBBE27AB4AF0B9AFDF21ED", "release_tag": "training-v1.8.7", "purpose": "Training v1.8.7 dataset manager + stable training patch (incremental over v1.8.6)" },
     { "id": "magpie-v4.3-runtime", "file": "Magpie-GameSR-v4.3-Phase3x3-ModelFolders-runtime.zip", "sha256": "0A461A282EF13A48FBE86B98E37218EE59296D84523353BD3776BCD9049738E2", "release_tag": "magpie-v4.3", "purpose": "Magpie GameSR v4.3 phase-aware 3x3 NPU runtime (x64 build, models, RyzenAI/VitisAI DLLs); GitHub Release asset, not in git" },
-    { "id": "magpie-v4.3-source-patch", "file": "Magpie-GameSR-v4.3-Phase3x3-ModelFolders-source-patch.zip", "sha256": "34706F7197DDE8655AC448019378A2CD2BA28E8A5877BB23F5EC9D9CD3246AA3", "release_tag": "magpie-v4.3", "purpose": "Magpie GameSR v4.3 source patch (SesrNpuProcessor/ScalingModeItem/ScalingModesPage/Renderer + decoder HLSL test); extracted to magpie/patches/v4.3-phase3x3-modelfolders" }
+    { "id": "magpie-v4.3-source-patch", "file": "Magpie-GameSR-v4.3-Phase3x3-ModelFolders-source-patch.zip", "sha256": "34706F7197DDE8655AC448019378A2CD2BA28E8A5877BB23F5EC9D9CD3246AA3", "release_tag": "magpie-v4.3", "purpose": "Magpie GameSR v4.3 source patch (SesrNpuProcessor/ScalingModeItem/ScalingModesPage/Renderer + decoder HLSL test); extracted to magpie/patches/v4.3-phase3x3-modelfolders" },
+    { "id": "magpie-v4.4-source", "file": "Magpie-GameSR-v4.4-Phase3x3-Vectorized-full-source.zip", "sha256": "29D4D09A0547FF75E43271A35AE583711D2541C5944E2CA7C25F2F9BCC37936B", "release_tag": "magpie-v4.4", "purpose": "Magpie GameSR v4.4 source (full tree; the 9-file GameSR modification set extracted to magpie/patches/v4.4-phase3x3-vectorized)" },
+    { "id": "magpie-v4.4-runtime", "file": "Magpie-GameSR-v4.4-Phase3x3-Vectorized-runtime.zip", "sha256": "4BB0E16CA0CE228CAA672A16B82F9D08AFB8D9B2C472D356486969A6117582AC", "release_tag": "magpie-v4.4", "purpose": "Magpie GameSR v4.4 phase-aware 3x3 GPU-vectorized NPU runtime (x64 build, models, RyzenAI/VitisAI DLLs); GitHub Release asset, not in git" }
   ]
 }

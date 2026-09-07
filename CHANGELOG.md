@@ -17,6 +17,14 @@
 - 源码补丁 SHA256 `34706F71…D3246AA3`；支持新 `phase_aware_3x3_v1 + rgb_residual + schema v3`（O4=972 权重+27 bias），并与训练端 v1.8.5 导出契约逐维对齐；保留旧 O3/O4/O6/O8 路径；模型子文件夹 + 相对路径 + 绝对路径/`..` 越界阻止 + 首帧 bias 修复。
 - 梳理与检查见 `magpie/REVIEW-v4.3-phase3x3-modelfolders.md`。
 
+### Magpie GameSR v4.4 — Phase3x3 GPU 向量化
+
+- 基于 **v4.3** 的源码补丁，独立归档于 `magpie/patches/v4.4-phase3x3-vectorized/`（9 文件，未覆盖 `magpie/current/full-source`）；运行包（296 MB）按 `ARTIFACTS.md` 约定为 GitHub Release `magpie-v4.4` 资产，SHA256 `4BB0E16C…117582AC`。
+- 源码补丁 SHA256 `29D4D09A…C37936B`；**GPU 向量化**核心改动：启动把 schema v3 权重重排为 `float4` 通道组（`StructuredBuffer<float4>`），O4 每像素 latent 读取 `108 标量 → 9 float4`、权重 `108 标量 → 27 float4`；O6/O8 两 float4 平面；向后兼容 O3 / legacy `bilinear_then_1x1`（运行包实测含 schema v1 `gamesr-c24-l3-o4` + schema v3 `gamesr-c16-l4-o4-phase3x3r-v3`）。
+- 运行包 `int8-qdq.onnx.meta.json` 实证模型源自**训练 v1.8.5**（AMD Quark INT8 导出）；**不修改 ONNX / 不重训 / 不重量化**；与训练端 v1.8.5 schema v3 逐维对齐。
+- 相对 v4.3 仅改 3 文件（`SesrNpuProcessor.cpp` / `Renderer.cpp` / `tools/GameSRPhaseDecoderTest.hlsl`），其余 5 文件与 v4.3 完全相同（cmp 校验）。
+- 梳理与检查见 `magpie/REVIEW-v4.4-phase3x3-vectorized.md`：源码逐项核对属实、索引自洽、契约对齐；Release x64 编译 / HLSL `cs_5_0` 编译 / 设备端 NPU 实际加速待用户解压后最终验证。
+
 ## 2026-09-06
 
 ### Training CLO v1.0 — C/L/O 三维训练选择器

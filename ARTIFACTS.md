@@ -21,6 +21,7 @@ Git tracks source code, configuration, documentation and compact benchmark summa
 | Sweep | 105-model bundle and compact result ZIP | Release or independent artifact storage |
 | Magpie | v4.1.1 full-source ZIP | Release `magpie-v4.1.1` |
 | Magpie | v4.3 runtime ZIP (296 MB) + v4.3 source-patch ZIP | Release `magpie-v4.3` (runtime binary must be uploaded as Release asset; source patch extracted to `magpie/patches/v4.3-phase3x3-modelfolders`) |
+| Magpie | v4.4 runtime ZIP (296 MB) + v4.4 full-source ZIP | Release `magpie-v4.4` (runtime binary must be uploaded as Release asset; 9-file GameSR modification set extracted to `magpie/patches/v4.4-phase3x3-vectorized`) |
 | Models | C32-L3 ONNX/QDQ and checkpoints | Model release or independent artifact storage |
 
 Vendor runtimes and full profiler output must not enter Git or LFS without a licensing and size review.
