@@ -25,6 +25,24 @@
 - 相对 v4.3 仅改 3 文件（`SesrNpuProcessor.cpp` / `Renderer.cpp` / `tools/GameSRPhaseDecoderTest.hlsl`），其余 5 文件与 v4.3 完全相同（cmp 校验）。
 - 梳理与检查见 `magpie/REVIEW-v4.4-phase3x3-vectorized.md`：源码逐项核对属实、索引自洽、契约对齐；Release x64 编译 / HLSL `cs_5_0` 编译 / 设备端 NPU 实际加速待用户解压后最终验证。
 
+### Magpie v4.4 — Runtime Perf Probe（运行版性能探针，无需编译）
+
+- 新增 `magpie/patches/v4.4-runtime-perf-probe/`（纯脚本 4 KB，SHA256 `16603246…1AA093D`）：覆盖 v4.4 **运行版**根目录即可用，**不需要 VS / 重新编译**；`RUN-GAMESR-RUNTIME-PERF-PROBE.cmd` 采集 10 组样本（GPU→CPU / Input pack / NPU / Output pack / GPU upload / fence / 丢帧 / 复用 / fresh FPS）。
+- 不做 FP32-vs-INT8 同帧 A/B（需源码版重新编译）。
+- 修 `%~dp0` 尾部反斜杠导致 PowerShell `GetFullPath Illegal characters in path` 的问题（改用 `%CD%` + PS1 端清理引号/斜杠）。
+
+### Magpie v4.4 — FullSource RuntimeDeps 修复
+
+- v4.4 full-source 打包漏掉 `third_party\sesr\onnx\bin\`，环境检查报 `[MISSING] … VitisAI runtime files`。
+- 修复包 `Magpie-GameSR-v4.4-FullSource-RuntimeDeps-Fix.zip`（132 MB，SHA256 `D2A3010A…5F276A`）= GitHub Release `magpie-v4.4` 资产（**DLL 被 `.gitignore` 排除，不入 git**）。
+- 补 4 个 DLL；`onnxruntime.dll` SHA256 `919AC18B…EAF4E3` 与 `Check-Environment.ps1` 要求的 Ryzen AI 1.7.1 一致。本仓仅收录脚本部分。
+
+### Magpie v4.5 — One-Click Probe（源码补丁）
+
+- 新增 `magpie/patches/v4.5-one-click-probe/`（= FIXED 版，SHA256 `6F09308B…51056BA`；初版 `4386CE5A…45B7D6` 已被其取代，两版 C++ 完全相同，仅脚本路径处理不同）。
+- 相对 v4.4 **纯增量**：`SesrNpuProcessor.cpp` +447 行 / 仅删 1 行，v4.4 float4 向量化全部保留，未回退。
+- 新增画质（FP32 vs INT8、残差、Zero Residual、Phase3x3 状态）与性能（GPU→CPU / pack / NPU / upload / fence / 丢帧 / 复用 / fresh FPS / 捕获后端）一键探针，输出 `GameSR-Probe-<时间戳>/` 的 `REPORT.txt`（直接给 `[FAIL]/[WARN]` 结论）+ `metrics.csv` + `perf*.csv` + `probe.log`。
+
 ## 2026-09-06
 
 ### Training CLO v1.0 — C/L/O 三维训练选择器

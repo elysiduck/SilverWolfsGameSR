@@ -194,6 +194,36 @@ v1.8.4  Phase-Aware 3×3 decoder（direct_rgb + 20% bilinear skip，schema v2）
 
 ---
 
+### Magpie GameSR v4.4 — Runtime Perf Probe（运行版性能探针，无需编译）
+
+- **包**：`Magpie-GameSR-v4.4-Runtime-Perf-Probe-patch.zip`（4 KB，纯脚本，入仓于 `magpie/patches/v4.4-runtime-perf-probe/`）。SHA256 `16603246338DD4958ED33E39CD7B7C9A6CE4F48F5DFDC1966B3C272EF1AA093D`。
+- **定位**：直接覆盖 v4.4 **运行版**根目录，**不需要 Visual Studio / 重新编译**；双击 `RUN-GAMESR-RUNTIME-PERF-PROBE.cmd` 即用。
+- 测量的是**现有 v4.4 链路**（`GameSR PIPELINE v4 ASYNC` 日志）：GPU→CPU、Input Pack、NPU、Output Pack、GPU Upload、GPU Fence、丢帧、旧结果复用、实际 fresh GameSR FPS，共 10 组样本。
+- ⚠️ **不做** FP32 vs INT8 同帧 A/B（那需要源码版 Probe 重新编译，见下条 v4.5）。
+- 已知并已修的坑：`%~dp0` 带尾部 `\` 传给 PowerShell 会触发 `GetFullPath … Illegal characters in path`；修正版改用 `%CD%` 并在 PS1 端清理引号 / 斜杠。
+
+### Magpie GameSR v4.4 — FullSource RuntimeDeps 修复（补齐编译依赖 DLL）
+
+- **包**：`Magpie-GameSR-v4.4-FullSource-RuntimeDeps-Fix.zip`（132 MB，GitHub Release `magpie-v4.4` 资产，**DLL 不入 git**）。SHA256 `D2A3010A1E1855E5770D539149FFAB36BF86954976AB895CDB99B141BD5F276A`。
+- 根因：v4.4 full-source 打包时**漏掉** `third_party\sesr\onnx\bin\`，导致环境检查报 `[MISSING] … VitisAI runtime files`。
+- 补 4 个 DLL：`onnxruntime.dll`、`onnxruntime_vitisai_ep.dll`、`dyn_dispatch_core.dll`、`aiecompiler_client.dll`。
+- `onnxruntime.dll` SHA256 `919AC18B9AD61588C1D65EDBA775B012DA626FACD01623FEAB3A470042EAF4E3`，与 `Check-Environment.ps1` 要求的 Ryzen AI 1.7.1 一致。
+- 本仓仅收录脚本部分（`README_FIX_CN.txt` + `VERIFY-RUNTIME-DEPS.cmd`）于 `magpie/patches/v4.4-fullsource-runtimedeps-fix/`，并附 `README.md` 说明 DLL 需从 Release 资产获取。
+
+### Magpie GameSR v4.5 — One-Click Probe（源码补丁，画质 + 性能一键探针）
+
+- **包**：
+  - `Magpie-GameSR-v4.5-OneClick-Probe-source-patch.zip`（45 KB，初版）。SHA256 `4386CE5A80E691C1F723F83E50DD6D2A41032EF04ADD4A30AE42653A0745B7D6`。
+  - `Magpie-GameSR-v4.5-OneClick-Probe-source-patch-FIXED.zip`（45.8 KB，**修正版 = 本仓归档的正式版**）。SHA256 `6F09308BFA2D2C1A7B41882E0D39A782F9375BBBE0F294C92B2A55AD851056BA`。
+  - 归档于 `magpie/patches/v4.5-one-click-probe/`（覆盖 v4.4 full-source 的 `src/` 后重新编译）。
+- **两版差异仅脚本路径**：FIXED 改 `RUN-GAMESR-PROBE.cmd` 传 `%CD%`（原 `%~dp0` 尾部反斜杠）+ `Finalize-Probe.ps1` 清理引号/斜杠 + 新增 `README_PATH_HOTFIX_CN.txt`；**`Renderer.cpp` 与 `SesrNpuProcessor.cpp` 两版完全相同**（C++ Probe 实现未动）。
+- **相对 v4.4 是纯增量**：`SesrNpuProcessor.cpp` 2058 → 2504 行（**+447 行、仅删 1 行**）；v4.4 的 float4 向量化全部保留（`StructuredBuffer<float4>`、`LatentVectorAt`、`packedPhase` 均在），未回退。
+- 新增 Probe 能力：`GameSrProbeTimestamp()`、`CompareFloatVectors()`（FP32 vs INT8 误差）、`CompareRgba8()`（画质比对）；由根目录 `GameSR-Probe.request` 文件触发，分画质 / 性能两个阶段。
+- 自动输出 `GameSR-Probe-<日期时间>/`：`REPORT.txt`、`metrics.csv`、`perf*.csv`、`probe.log`；`REPORT.txt` 直接给 `[FAIL]/[WARN]` 结论（如 INT8 量化是否损伤残差、fresh 结果率能否撑 60 FPS、捕获后端是否为 GDI）而非原始日志。
+- 检查项：**画质**（Bilinear / FP32 GameSR / INT8 GameSR / Zero Residual / 残差强度 / FP32-vs-INT8 误差 / Phase3x3 decoder 状态）+ **性能**（GPU→CPU、Input pack、NPU、Output pack、GPU upload、GPU fence、丢帧、旧结果复用、实际 fresh FPS、捕获后端）。
+
+---
+
 ## 2. 相关工具家族（独立归档，未全部入仓）
 
 - **架构扫描构建器** `GameSR-Architecture-Sweep-Builder` / `GameSR-Architecture-Sweep-Runner`（v1.0 / v1.0.1 / v1.0.2）：在目标掌机批量跑 NPU 架构组合（C / L / 层数）的延迟探针，产出候选延迟预算表，供“宽度 vs 深度”取舍。
