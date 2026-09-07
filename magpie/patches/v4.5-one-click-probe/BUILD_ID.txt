@@ -1,0 +1,7 @@
+SilverWolfsGameSR Magpie build
+Build ID: magpie-v4.5-oneclick-probe
+Base: Magpie-GameSR-v4.4-Phase3x3-Vectorized
+Probe: root GameSR-Probe.request arms one-shot quality + performance diagnosis
+Quality: same-frame QDQ(NPU) vs FP32(CPU) latent and CPU phase3x3 decode, PNG references
+Performance: 180 fresh-result aggregate + drops/reuse + existing renderer log analysis
+Compatibility: normal runtime behavior unchanged when GameSR-Probe.request is absent
