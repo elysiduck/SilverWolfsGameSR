@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>GameSR NPU Potential-4 输出探针</title>
+<style>
+:root{--bg:#14161a;--panel:#1c1f26;--line:#2b303b;--txt:#e6e9ef;--dim:#8b93a3;--acc:#4dd0e1}
+*{box-sizing:border-box}
+body{margin:0;padding:28px;background:var(--bg);color:var(--txt);
+ font:14px/1.55 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--dim);font-size:12.5px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+ padding:18px;margin-bottom:20px;overflow-x:auto}
+h2{font-size:15px;margin:0 0 14px;color:var(--acc);font-weight:600}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--dim);font-weight:600;font-size:12px;position:sticky;top:0;background:var(--panel)}
+th:first-child,td:first-child{text-align:left}
+.matrix th{background:var(--panel);color:var(--txt);font-weight:600}
+.matrix td.cell{text-align:center;color:#0d0f12;border-radius:4px;vertical-align:middle}
+.cell .big{font-size:14px;font-weight:700}
+.cell .small{font-size:10px;opacity:.8;font-weight:600}
+.fam{font-family:Consolas,monospace;font-weight:600}
+.num{font-family:Consolas,monospace}
+.strong{font-weight:700}
+.dim{color:var(--dim);font-size:12px}
+.wrap{max-height:70vh;overflow-y:auto}
+.kv{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:14px;font-size:12.5px;color:var(--dim)}
+.kv b{color:var(--txt);font-family:Consolas,monospace}
+.legend{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);margin-top:12px}
+.bar{height:10px;width:220px;border-radius:5px}
+.note{background:#1a1f17;border:1px solid #2c3a26;border-radius:8px;padding:12px 14px;
+ margin-bottom:20px;color:#bcd0a8;font-size:12.5px;line-height:1.6}
+.note b{color:#e6f0d8}
+</style></head><body>
+<h1>GameSR NPU Potential-4 输出探针</h1>
+<div class="sub">数据源 GameSR-NPU-Potential4-Output-Probe-20260906-124724-COMPACT.zip
+ · 4 主干 × 输出通道 O3/O4/O6/O8 = 16 模型 · 输入 1×3×720×1280 · warmup 20 / runs 600
+ · 设备 Ryzen AI NPU (X1-Benchmark) · int8 QDQ / VitisAI EP</div>
+
+<div class="note"><b>范围说明：</b>纯 NPU 运行时，不含 Magpie Map/stitch/upload 与 learned GPU decoder。
+增量为"相对<b>同主干 O3</b>"。所有模型 <b>status=NPU_ONLY</b>。这是<b>随机权重结构探针</b>（非训练模型），
+绝对延迟不可直接与 105 模型 architecture-sweep 比，仅用于看"输出宽度带来的相对增量"。</div>
+
+<div class="kv">
+<span>模型数 <b>16</b></span>
+<span>主干 <b>C8-L5 / C16-L4 / C24-L3 / C32-L3</b></span>
+<span>输出通道 <b>O3 / O4 / O6 / O8</b></span>
+<span>最快 <b>7.0437 ms</b></span>
+<span>最慢 <b>9.0067 ms</b></span>
+<span>全部 <b>NPU_ONLY</b></span>
+</div>
+
+<div class="card">
+<h2>平均推理耗时热力矩阵（ms，绿=快 红=慢；每格下方为 P95）</h2>
+<table class="matrix"><thead><tr><th>主干 \ O</th><th>O3</th><th>O4</th><th>O6</th><th>O8</th></tr></thead><tbody><tr><th>C8-L5</th><td class="cell" style="background:#1b5d4f"><div class="big">7.074</div><div class="small">P95 7.507</div></td><td class="cell" style="background:#3c6e4c"><div class="big">7.216</div><div class="small">P95 7.620</div></td><td class="cell" style="background:#aca642"><div class="big">7.694</div><div class="small">P95 8.108</div></td><td class="cell" style="background:#f9cb3c"><div class="big">8.037</div><div class="small">P95 8.497</div></td></tr>
+<tr><th>C16-L4</th><td class="cell" style="background:#145a50"><div class="big">7.044</div><div class="small">P95 7.494</div></td><td class="cell" style="background:#346a4d"><div class="big">7.182</div><div class="small">P95 7.559</div></td><td class="cell" style="background:#b6ab41"><div class="big">7.738</div><div class="small">P95 8.244</div></td><td class="cell" style="background:#eec73d"><div class="big">7.976</div><div class="small">P95 8.416</div></td></tr>
+<tr><th>C24-L3</th><td class="cell" style="background:#50784a"><div class="big">7.301</div><div class="small">P95 7.707</div></td><td class="cell" style="background:#748a47"><div class="big">7.455</div><div class="small">P95 7.877</div></td><td class="cell" style="background:#dcbe3e"><div class="big">7.899</div><div class="small">P95 8.381</div></td><td class="cell" style="background:#f6b23e"><div class="big">8.224</div><div class="small">P95 8.807</div></td></tr>
+<tr><th>C32-L3</th><td class="cell" style="background:#f8c23c"><div class="big">8.100</div><div class="small">P95 8.544</div></td><td class="cell" style="background:#f5a83f"><div class="big">8.291</div><div class="small">P95 8.927</div></td><td class="cell" style="background:#ed6f44"><div class="big">8.714</div><div class="small">P95 9.197</div></td><td class="cell" style="background:#e84848"><div class="big">9.007</div><div class="small">P95 9.487</div></td></tr></tbody></table>
+<div class="legend"><span>7.04 ms</span><div class="bar" style="background:linear-gradient(90deg,#145a50,#f0a83c,#e84848)"></div><span>9.01 ms</span></div>
+</div>
+
+<div class="card">
+<h2>相对同主干 O3 的延迟增量（%，绿=0 红=+15%）</h2>
+<table class="matrix"><thead><tr><th>主干 \ O</th><th>O3</th><th>O4</th><th>O6</th><th>O8</th></tr></thead><tbody><tr><th>C8-L5</th><td class="cell" style="background:#28b45a"><div class="big">+0.00%</div></td><td class="cell" style="background:#40a555"><div class="big">+2.01%</div></td><td class="cell" style="background:#917348"><div class="big">+8.77%</div></td><td class="cell" style="background:#cb503e"><div class="big">+13.61%</div></td></tr>
+<tr><th>C16-L4</th><td class="cell" style="background:#28b45a"><div class="big">+0.00%</div></td><td class="cell" style="background:#3fa556"><div class="big">+1.97%</div></td><td class="cell" style="background:#9e6b46"><div class="big">+9.86%</div></td><td class="cell" style="background:#c6523f"><div class="big">+13.23%</div></td></tr>
+<tr><th>C24-L3</th><td class="cell" style="background:#28b45a"><div class="big">+0.00%</div></td><td class="cell" style="background:#41a455"><div class="big">+2.11%</div></td><td class="cell" style="background:#8a7749"><div class="big">+8.20%</div></td><td class="cell" style="background:#bf5740"><div class="big">+12.64%</div></td></tr>
+<tr><th>C32-L3</th><td class="cell" style="background:#28b45a"><div class="big">+0.00%</div></td><td class="cell" style="background:#44a255"><div class="big">+2.35%</div></td><td class="cell" style="background:#827c4a"><div class="big">+7.58%</div></td><td class="cell" style="background:#ae6143"><div class="big">+11.19%</div></td></tr></tbody></table>
+<div class="legend"><span>0%</span><div class="bar" style="background:linear-gradient(90deg,#28b45a,#f0a83c,#e84848)"></div><span>+13.6%</span></div>
+</div>
+
+<div class="card">
+<h2>全量 16 条（点击表头可排序）</h2>
+<div class="wrap"><table id="t">
+<thead><tr>
+<th data-k="i">#</th><th data-k="bb">主干</th>
+<th data-k="c">通道C</th><th data-k="l">层数L</th><th data-k="o">输出</th>
+<th data-k="arch">架构</th>
+<th data-k="avg">平均 ms</th><th data-k="p50">P50 ms</th><th data-k="p95">P95 ms</th>
+<th data-k="d">vs O3</th><th data-k="mib">输出MiB</th><th data-k="st">状态</th>
+</tr></thead>
+<tbody><tr data-bb="C8-L5" data-c="8" data-l="5" data-o="3" data-avg="7.07401" data-p50="7.1187" data-p95="7.5072" data-d="0.0"><td class="dim">1</td><td class="fam">C8-L5</td><td class="num">8</td><td class="num">5</td><td class="fam">O3</td><td class="num">C8-L5-O3</td><td class="num strong" style="color:#1b5d4f">7.0740</td><td class="num">7.1187</td><td class="num">7.5072</td><td class="num">+0.00%</td><td class="num">10.55</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C8-L5" data-c="8" data-l="5" data-o="4" data-avg="7.21633" data-p50="7.2286" data-p95="7.6202" data-d="2.012"><td class="dim">2</td><td class="fam">C8-L5</td><td class="num">8</td><td class="num">5</td><td class="fam">O4</td><td class="num">C8-L5-O4</td><td class="num strong" style="color:#3c6e4c">7.2163</td><td class="num">7.2286</td><td class="num">7.6202</td><td class="num">+2.01%</td><td class="num">14.06</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C8-L5" data-c="8" data-l="5" data-o="6" data-avg="7.69448" data-p50="7.753" data-p95="8.1082" data-d="8.772"><td class="dim">3</td><td class="fam">C8-L5</td><td class="num">8</td><td class="num">5</td><td class="fam">O6</td><td class="num">C8-L5-O6</td><td class="num strong" style="color:#aca642">7.6945</td><td class="num">7.7530</td><td class="num">8.1082</td><td class="num">+8.77%</td><td class="num">21.09</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C8-L5" data-c="8" data-l="5" data-o="8" data-avg="8.03703" data-p50="8.1131" data-p95="8.4966" data-d="13.613"><td class="dim">4</td><td class="fam">C8-L5</td><td class="num">8</td><td class="num">5</td><td class="fam">O8</td><td class="num">C8-L5-O8</td><td class="num strong" style="color:#f9cb3c">8.0370</td><td class="num">8.1131</td><td class="num">8.4966</td><td class="num">+13.61%</td><td class="num">28.12</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C16-L4" data-c="16" data-l="4" data-o="3" data-avg="7.04369" data-p50="7.0564" data-p95="7.4936" data-d="0.0"><td class="dim">5</td><td class="fam">C16-L4</td><td class="num">16</td><td class="num">4</td><td class="fam">O3</td><td class="num">C16-L4-O3</td><td class="num strong" style="color:#145a50">7.0437</td><td class="num">7.0564</td><td class="num">7.4936</td><td class="num">+0.00%</td><td class="num">10.55</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C16-L4" data-c="16" data-l="4" data-o="4" data-avg="7.18217" data-p50="7.2164" data-p95="7.5589" data-d="1.966"><td class="dim">6</td><td class="fam">C16-L4</td><td class="num">16</td><td class="num">4</td><td class="fam">O4</td><td class="num">C16-L4-O4</td><td class="num strong" style="color:#346a4d">7.1822</td><td class="num">7.2164</td><td class="num">7.5589</td><td class="num">+1.97%</td><td class="num">14.06</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C16-L4" data-c="16" data-l="4" data-o="6" data-avg="7.7384" data-p50="7.7554" data-p95="8.2437" data-d="9.863"><td class="dim">7</td><td class="fam">C16-L4</td><td class="num">16</td><td class="num">4</td><td class="fam">O6</td><td class="num">C16-L4-O6</td><td class="num strong" style="color:#b6ab41">7.7384</td><td class="num">7.7554</td><td class="num">8.2437</td><td class="num">+9.86%</td><td class="num">21.09</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C16-L4" data-c="16" data-l="4" data-o="8" data-avg="7.97563" data-p50="8.0606" data-p95="8.4159" data-d="13.23"><td class="dim">8</td><td class="fam">C16-L4</td><td class="num">16</td><td class="num">4</td><td class="fam">O8</td><td class="num">C16-L4-O8</td><td class="num strong" style="color:#eec73d">7.9756</td><td class="num">8.0606</td><td class="num">8.4159</td><td class="num">+13.23%</td><td class="num">28.12</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C24-L3" data-c="24" data-l="3" data-o="3" data-avg="7.30114" data-p50="7.3083" data-p95="7.7069" data-d="0.0"><td class="dim">9</td><td class="fam">C24-L3</td><td class="num">24</td><td class="num">3</td><td class="fam">O3</td><td class="num">C24-L3-O3</td><td class="num strong" style="color:#50784a">7.3011</td><td class="num">7.3083</td><td class="num">7.7069</td><td class="num">+0.00%</td><td class="num">10.55</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C24-L3" data-c="24" data-l="3" data-o="4" data-avg="7.45496" data-p50="7.4863" data-p95="7.8768" data-d="2.107"><td class="dim">10</td><td class="fam">C24-L3</td><td class="num">24</td><td class="num">3</td><td class="fam">O4</td><td class="num">C24-L3-O4</td><td class="num strong" style="color:#748a47">7.4550</td><td class="num">7.4863</td><td class="num">7.8768</td><td class="num">+2.11%</td><td class="num">14.06</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C24-L3" data-c="24" data-l="3" data-o="6" data-avg="7.89949" data-p50="7.9505" data-p95="8.3808" data-d="8.195"><td class="dim">11</td><td class="fam">C24-L3</td><td class="num">24</td><td class="num">3</td><td class="fam">O6</td><td class="num">C24-L3-O6</td><td class="num strong" style="color:#dcbe3e">7.8995</td><td class="num">7.9505</td><td class="num">8.3808</td><td class="num">+8.20%</td><td class="num">21.09</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C24-L3" data-c="24" data-l="3" data-o="8" data-avg="8.22424" data-p50="8.2921" data-p95="8.8072" data-d="12.643"><td class="dim">12</td><td class="fam">C24-L3</td><td class="num">24</td><td class="num">3</td><td class="fam">O8</td><td class="num">C24-L3-O8</td><td class="num strong" style="color:#f6b23e">8.2242</td><td class="num">8.2921</td><td class="num">8.8072</td><td class="num">+12.64%</td><td class="num">28.12</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C32-L3" data-c="32" data-l="3" data-o="3" data-avg="8.10048" data-p50="8.0925" data-p95="8.5436" data-d="0.0"><td class="dim">13</td><td class="fam">C32-L3</td><td class="num">32</td><td class="num">3</td><td class="fam">O3</td><td class="num">C32-L3-O3</td><td class="num strong" style="color:#f8c23c">8.1005</td><td class="num">8.0925</td><td class="num">8.5436</td><td class="num">+0.00%</td><td class="num">10.55</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C32-L3" data-c="32" data-l="3" data-o="4" data-avg="8.29091" data-p50="8.2542" data-p95="8.9268" data-d="2.35"><td class="dim">14</td><td class="fam">C32-L3</td><td class="num">32</td><td class="num">3</td><td class="fam">O4</td><td class="num">C32-L3-O4</td><td class="num strong" style="color:#f5a83f">8.2909</td><td class="num">8.2542</td><td class="num">8.9268</td><td class="num">+2.35%</td><td class="num">14.06</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C32-L3" data-c="32" data-l="3" data-o="6" data-avg="8.71419" data-p50="8.7447" data-p95="9.1971" data-d="7.576"><td class="dim">15</td><td class="fam">C32-L3</td><td class="num">32</td><td class="num">3</td><td class="fam">O6</td><td class="num">C32-L3-O6</td><td class="num strong" style="color:#ed6f44">8.7142</td><td class="num">8.7447</td><td class="num">9.1971</td><td class="num">+7.58%</td><td class="num">21.09</td><td class="dim">NPU_ONLY</td></tr>
+<tr data-bb="C32-L3" data-c="32" data-l="3" data-o="8" data-avg="9.0067" data-p50="9.0338" data-p95="9.4867" data-d="11.187"><td class="dim">16</td><td class="fam">C32-L3</td><td class="num">32</td><td class="num">3</td><td class="fam">O8</td><td class="num">C32-L3-O8</td><td class="num strong" style="color:#e84848">9.0067</td><td class="num">9.0338</td><td class="num">9.4867</td><td class="num">+11.19%</td><td class="num">28.12</td><td class="dim">NPU_ONLY</td></tr></tbody></table></div>
+</div>
+
+<script>
+const tb=document.querySelector('#t tbody');
+const K={};
+[...document.querySelectorAll('#t th')].forEach((th,i)=>{th.style.cursor='pointer';
+ th.onclick=()=>{const k=th.dataset.k;const d=!(th.dataset.asc==='1');
+  th.dataset.asc=d?'1':'0';
+  const rs=[...tb.rows];rs.sort((a,b)=>{let x=a.dataset[k],y=b.dataset[k];
+   if(x!==undefined&&!isNaN(+x)){x=+x;y=+y;return d?x-y:y-x;}
+   return d?x.localeCompare(y):y.localeCompare(x);});
+  rs.forEach(r=>tb.appendChild(r));};});
+</script>
+</body></html>
